@@ -44,7 +44,7 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
 
-  std::string usb_port = "/dev/ttyUSB1";
+  std::string usb_port = "/dev/ttyUSB0";
   char * cli_options;
   cli_options = rcutils_cli_get_option(argv, argv + argc, "-i");
   if (nullptr != cli_options) {

@@ -34,7 +34,7 @@ def generate_launch_description():
     LDS_LAUNCH_FILE = '/hlds_laser.launch.py'
     IMU_LAUNCH_FILE = '/wt61c.launch.py'
 
-    usb_port = LaunchConfiguration('usb_port', default='/dev/ttyUSB1')
+    usb_port = LaunchConfiguration('usb_port', default='/dev/ttyUSB0')
 
     tb3_param_dir = LaunchConfiguration(
         'tb3_param_dir',
@@ -88,7 +88,7 @@ def generate_launch_description():
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([lidar_pkg_dir, LDS_LAUNCH_FILE]),
-            launch_arguments={'port': '/dev/ttyUSB0', 'frame_id': 'base_scan'}.items(),
+            launch_arguments={'port': '/dev/ttyUSB1', 'frame_id': 'base_scan'}.items(),
         ),
 
         IncludeLaunchDescription(
