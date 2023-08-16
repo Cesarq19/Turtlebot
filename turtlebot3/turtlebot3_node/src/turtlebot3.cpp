@@ -51,19 +51,19 @@ TurtleBot3::Motors * TurtleBot3::get_motors()
 
 void TurtleBot3::init_dynamixel_sdk_wrapper(const std::string & usb_port)
 {
-  DynamixelSDKWrapper::Device opencr = {usb_port, 200, 1000000, 2.0f};
+  DynamixelSDKWrapper::Device u2d2 = {usb_port, 200, 1000000, 2.0f};
 
   this->declare_parameter<uint8_t>("u2d2.id");
   this->declare_parameter<int>("u2d2.baud_rate");
   this->declare_parameter<float>("u2d2.protocol_version");
 
-  this->get_parameter_or<uint8_t>("u2d2.id", opencr.id, 200);
-  this->get_parameter_or<int>("u2d2.baud_rate", opencr.baud_rate, 1000000);
-  this->get_parameter_or<float>("u2d2.protocol_version", opencr.protocol_version, 2.0f);
+  this->get_parameter_or<uint8_t>("u2d2.id", u2d2.id, 200);
+  this->get_parameter_or<int>("u2d2.baud_rate", u2d2.baud_rate, 1000000);
+  this->get_parameter_or<float>("u2d2.protocol_version", u2d2.protocol_version, 2.0f);
 
   RCLCPP_INFO(this->get_logger(), "Init DynamixelSDKWrapper");
 
-  dxl_sdk_wrapper_ = std::make_shared<DynamixelSDKWrapper>(opencr);
+  dxl_sdk_wrapper_ = std::make_shared<DynamixelSDKWrapper>(u2d2);
 
   dxl_sdk_wrapper_->init_read_memory(
     extern_control_table.millis.addr,
