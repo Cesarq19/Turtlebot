@@ -91,6 +91,13 @@ public:
     return data;
   }
 
+  bool set_data_to_motors(
+    const uint16_t & addr,
+    const uint16_t & length,
+    uint8_t * get_data,
+    std::string * msg
+  );
+
   bool set_data_to_device(
     const uint16_t & addr,
     const uint16_t & length,

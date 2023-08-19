@@ -69,19 +69,19 @@ void TurtleBot3::init_dynamixel_sdk_wrapper(const std::string & usb_port)
 
 void TurtleBot3::check_device_status()
 {
-  
-  const int8_t NOT_CONNECTED_MOTOR = -1;
+  const int8_t HARDWARE_PASS = 0;
 
   int8_t device_status = dxl_sdk_wrapper_->get_data_from_device<int8_t>(
-    extern_control_table.device_status.addr,
-    extern_control_table.device_status.length);
+    extern_control_table.hardware_error_status.addr,
+    extern_control_table.hardware_error_status.length);
 
   switch (device_status) {
-    case NOT_CONNECTED_MOTOR:
-      RCLCPP_WARN(this->get_logger(), "Please double check your Dynamixels and Power");
+    case HARDWARE_PASS:
+      RCLCPP_INFO(this->get_logger(), "All devices is pass.");
       break;
 
     default:
+      RCLCPP_WARN(this->get_logger(), "Please double check your Dynamixels and Power");
       break;
   }
 }
@@ -213,13 +213,15 @@ void TurtleBot3::cmd_vel_callback()
       data.dword[4] = 0;
       data.dword[5] = static_cast<int32_t>(msg->angular.z * 100);
 
-      uint16_t start_addr = extern_control_table.cmd_velocity_linear_x.addr;
+      uint16_t start_addr = extern_control_table..addr;
       uint16_t addr_length =
       (extern_control_table.cmd_velocity_angular_z.addr -
       extern_control_table.cmd_velocity_linear_x.addr) +
       extern_control_table.cmd_velocity_angular_z.length;
 
       uint8_t * p_data = &data.byte[0];
+
+      dxl_sdk_wrapper_->set_data_to_motors();
 
       dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
 

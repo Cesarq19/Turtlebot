@@ -49,9 +49,9 @@ typedef struct
   ControlItem operating_mode = {11, EEPROM, 1, READ_WRITE}; 
   ControlItem protocol_type = {13, EEPROM, 1, READ_WRITE};
 
-
   ControlItem motor_torque_enable = {64, RAM, 1, READ_WRITE};
   ControlItem led = {65, RAM, 1, READ_WRITE};
+  ControlItem hardware_error_status = {70, RAM, 1, READ};
   ControlItem profile_velocity = {112, RAM, 4, READ_WRITE};
   ControlItem profile_acceleration = {108, RAM, 4, READ_WRITE};
   ControlItem goal_velocity = {104, RAM, 4, READ_WRITE};
