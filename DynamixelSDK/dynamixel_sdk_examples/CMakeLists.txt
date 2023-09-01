@@ -30,7 +30,6 @@ ament_target_dependencies(read_write_node
 # Install
 install(TARGETS
   read_write_node
-  velocity_cmd_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
