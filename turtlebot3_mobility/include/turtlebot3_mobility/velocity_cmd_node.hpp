@@ -10,7 +10,7 @@
 #include <string>
 #include <queue>
 
-#include <geometry_msgs/msg/Twist.hpp>
+#include <geometry_msgs/msg/twist.hpp>
 #include <tf2_ros/transform_broadcaster.h>
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
@@ -28,3 +28,4 @@ class VelocityCmdNode : public rclcpp::Node
 
 
 }
+#endif
