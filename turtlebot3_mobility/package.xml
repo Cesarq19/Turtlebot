@@ -5,7 +5,8 @@
   <version>0.0.0</version>
   <description>TODO: Package description</description>
   <license>TODO: License declaration</license>
-
+  <maintainer email="cepaquin@espol.edu.ec">Cesar</maintainer>
+	
   <buildtool_depend>ament_cmake</buildtool_depend>
 
 
