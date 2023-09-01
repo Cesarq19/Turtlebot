@@ -2,11 +2,11 @@
 #include <memory>
 #include <string>
 
+#include "turtlebot3_mobility/velocity_cmd_node.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
 
-#include "velocity_cmd_node.hpp"
 
 // Control table address for X series (except XL-320)
 #define ADDR_OPERATING_MODE 11
