@@ -170,15 +170,14 @@ void TurtleBot3::parameter_event_callback()
           data.dword[1] = static_cast<int32_t>(motors_.profile_acceleration);
 
           uint16_t start_addr = extern_control_table.profile_acceleration.addr;
-          uint16_t addr_length =
-            (extern_control_table.profile_acceleration_right.addr -
-            extern_control_table.profile_acceleration_left.addr) +
-            extern_control_table.profile_acceleration_right.length;
+          uint16_t addr_length = 4;
 
           uint8_t * p_data = &data.byte[0];
 
-          dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
-
+          //dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
+          //dxl_sdk_wrapper_->set_data_to_motors(start_addr,addr_length,p_data, &sdk_msg);
+          writeTxRx(0, start_addr, addr_length, data.dword[0],&sdk_msg);
+          writeTxRx(1, start_addr, addr_length, data.dword[0],&sdk_msg);
           RCLCPP_INFO(
             this->get_logger(),
             "changed parameter value : %f [rev/min2] sdk_msg : %s",
@@ -213,17 +212,16 @@ void TurtleBot3::cmd_vel_callback()
       data.dword[4] = 0;
       data.dword[5] = static_cast<int32_t>(msg->angular.z * 100);
 
-      uint16_t start_addr = extern_control_table..addr;
-      uint16_t addr_length =
-      (extern_control_table.cmd_velocity_angular_z.addr -
-      extern_control_table.cmd_velocity_linear_x.addr) +
-      extern_control_table.cmd_velocity_angular_z.length;
+      uint16_t start_addr = extern_control_table.goal_velocity.addr;
+      uint16_t addr_length = 4;
 
       uint8_t * p_data = &data.byte[0];
 
-      dxl_sdk_wrapper_->set_data_to_motors();
+      writeTxRx(0,start_addr, 4, data.dword[0]+data.dword[1]);
+      writeTxRx(1,start_addr, 4, data.dword[0]-data.dword[1]);
+      //dxl_sdk_wrapper_->set_data_to_motors();
 
-      dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
+      //dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
 
       RCLCPP_DEBUG(
         this->get_logger(),

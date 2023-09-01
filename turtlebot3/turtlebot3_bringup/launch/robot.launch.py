@@ -86,10 +86,10 @@ def generate_launch_description():
             launch_arguments={'use_sim_time': use_sim_time}.items(),
         ),
 
-        IncludeLaunchDescription(
-            PythonLaunchDescriptionSource([lidar_pkg_dir, LDS_LAUNCH_FILE]),
-            launch_arguments={'port': '/dev/ttyUSB1', 'frame_id': 'base_scan'}.items(),
-        ),
+        #IncludeLaunchDescription(
+        #    PythonLaunchDescriptionSource([lidar_pkg_dir, LDS_LAUNCH_FILE]),
+        #    launch_arguments={'port': '/dev/ttyUSB1', 'frame_id': 'base_scan'}.items(),
+        #),
 
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource([imu_pkg_dir, IMU_LAUNCH_FILE]),

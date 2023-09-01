@@ -33,6 +33,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 #include <turtlebot3_msgs/msg/sensor_state.hpp>
+#include <dynamixel_sdk/dynamixel_sdk.h>
 
 #include "turtlebot3_node/control_table.hpp"
 #include "turtlebot3_node/devices/devices.hpp"
