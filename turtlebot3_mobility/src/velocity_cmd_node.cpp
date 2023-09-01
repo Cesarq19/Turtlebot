@@ -21,8 +21,8 @@
 #define BAUDRATE 57600             // Default Baudrate of DYNAMIXEL X series
 #define DEVICE_NAME "/dev/ttyUSB0" // [Linux]: "/dev/ttyUSB*", [Windows]: "COM*"
 
-dynamixel::PacketHandler * packetHandler;
-dynamixel::PortHandlerLinux * portHandler;
+dynamixel::PacketHandler packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
+dynamixel::PortHandler portHandler = dynamixel::PortHandlerLinux::getPortHandler(DEVICE_NAME);
 
 uint8_t dxl_error = 0;
 uint32_t goal_velocity_right = 0;
@@ -141,8 +141,6 @@ void setupDynamixel()
 
 int main(int argc, char *argv[])
 {
-    portHandler = dynamixel::PortHandlerLinux::getPortHandler(DEVICE_NAME);
-    packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
 
     // Open Serial Port
     dxl_comm_result = portHandler->openPort();
