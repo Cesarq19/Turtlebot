@@ -2,44 +2,42 @@
 #include <memory>
 #include <string>
 
+#include <ros/ros.h>
+
 #include "turtlebot3_mobility/velocity_cmd_node.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include "rclcpp/rclcpp.hpp"
 #include "rcutils/cmdline_parser.h"
 
-
-// Control table address for X series (except XL-320)
+// Control table address
 #define ADDR_OPERATING_MODE 11
 #define ADDR_TORQUE_ENABLE 64
 #define ADDR_GOAL_VELOCITY 104
-#define ADDR_PRESENT_POSITION 132
+#define ADDR_PRESENT_VELOCITY 128
 
 // Protocol version
 #define PROTOCOL_VERSION 2.0 // Default Protocol version of DYNAMIXEL X series.
 
 // Default setting
+#define MOTOR_LEFT_ID 0
+#define MOTOR_RIGHT_ID 1
 #define BAUDRATE 57600             // Default Baudrate of DYNAMIXEL X series
 #define DEVICE_NAME "/dev/ttyUSB0" // [Linux]: "/dev/ttyUSB*", [Windows]: "COM*"
 
-dynamixel::PacketHandler packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
-dynamixel::PortHandler portHandler = dynamixel::PortHandlerLinux::getPortHandler(DEVICE_NAME);
+using namespace dynamixel;
+
+PortHandler *portHandler;
+PacketHandler *packetHandler;
 
 uint8_t dxl_error = 0;
-uint32_t goal_velocity_right = 0;
-uint32_t goal_velocity_left = 0;
 int dxl_comm_result = COMM_TX_FAIL;
+uint32_t goal_velocity = 0;
 
-VelocityCmdNode::VelocityCmdNode()
-    : Node("velocity_cmd_node")
+VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
 {
-    RCLCPP_INFO(this->get_logger(), "Run motors node");
-    this->declare_parameter("qos_depth", 10);
-    int8_t qos_depth = 0;
-    this->get_parameter("qos_depth", qos_depth);
+    RCLCPP_INFO(this->get_logger(), "Run mobility node");
 
-    const auto qos =
-        rclcpp::QoS(rclcpp::KeepLast(qos_depth)).reliable().durability_volatile();
-
+    auto qos = rclcpp::QoS(rclcpp::KeepLast(10));
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel",
         qos,
@@ -47,40 +45,29 @@ VelocityCmdNode::VelocityCmdNode()
         {
             uint8_t dxl_error = 0;
 
-            uint32_t linear_velocity = (unsigned int)msg->linear.x * 100;
-            uint32_t angular_velocity = (unsigned int)msg->angular.z * 100;
+            linear_velocity_ = static_cast<int32_t>(msg->linear.x * 100);
+            angular_velocity_ = static_cast<int32_t>(msg->angular.z * 100);
 
-            goal_velocity_left = linear_velocity + angular_velocity;
-            goal_velocity_right = linear_velocity - angular_velocity;
-
+            // Write Goal Velocity
             dxl_comm_result =
                 packetHandler->write4ByteTxRx(
                     portHandler,
-                    0,
+                    MOTOR_LEFT_ID,
                     ADDR_GOAL_VELOCITY,
-                    goal_velocity_right,
+                    linear_velocity_ - angular_velocity_,
                     &dxl_error);
 
             dxl_comm_result =
                 packetHandler->write4ByteTxRx(
                     portHandler,
-                    1,
+                    MOTOR_RIGHT_ID,
                     ADDR_GOAL_VELOCITY,
-                    goal_velocity_left,
+                    linear_velocity_ + angular_velocity_,
                     &dxl_error);
 
-            if (dxl_comm_result != COMM_SUCCESS)
-            {
-                RCLCPP_INFO(this->get_logger(), "%s", packetHandler->getTxRxResult(dxl_comm_result));
-            }
-            else if (dxl_error != 0)
-            {
-                RCLCPP_INFO(this->get_logger(), "%s", packetHandler->getRxPacketError(dxl_error));
-            }
-            else
-            {
-                RCLCPP_INFO(this->get_logger(), "Todo OK");
-            }
+            RCLCPP_DEBUG(
+                this->get_logger(),
+                "lin_vel: %f ang_vel: %f ", msg->linear.x, msg->angular.z);
         });
 }
 
@@ -88,50 +75,60 @@ VelocityCmdNode::~VelocityCmdNode()
 {
 }
 
-void setupDynamixel()
+void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
 {
-    // Use Position Control Mode
+    // Change to Velocity Control in the motors
     dxl_comm_result = packetHandler->write1ByteTxRx(
         portHandler,
-        0,
+        dxl_id_1,
         ADDR_OPERATING_MODE,
-        3,
-        &dxl_error);
-
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
         1,
-        ADDR_OPERATING_MODE,
-        3,
         &dxl_error);
 
     if (dxl_comm_result != COMM_SUCCESS)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Position Control Mode.");
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
+    }
+
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        dxl_id_2,
+        ADDR_OPERATING_MODE,
+        1,
+        &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
+    }
+
+    // Enable Torque of Dynamixels
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        dxl_id_1,
+        ADDR_TORQUE_ENABLE,
+        1,
+        &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in left motor.");
     }
     else
     {
-        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Position Control Mode.");
+        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to enable torque.");
     }
 
-    // Enable Torque of DYNAMIXEL
     dxl_comm_result = packetHandler->write1ByteTxRx(
         portHandler,
-        0,
-        ADDR_TORQUE_ENABLE,
-        1,
-        &dxl_error);
-
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
-        0,
+        dxl_id_2,
         ADDR_TORQUE_ENABLE,
         1,
         &dxl_error);
 
     if (dxl_comm_result != COMM_SUCCESS)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque.");
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in right motor.");
     }
     else
     {
@@ -141,6 +138,8 @@ void setupDynamixel()
 
 int main(int argc, char *argv[])
 {
+    portHandler = PortHandler::getPortHandler(DEVICE_NAME);
+    packetHandler = PacketHandler::getPacketHandler(PROTOCOL_VERSION);
 
     // Open Serial Port
     dxl_comm_result = portHandler->openPort();
@@ -166,18 +165,25 @@ int main(int argc, char *argv[])
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set the baudrate.");
     }
 
-    setupDynamixel();
+    setupMotors(MOTOR_LEFT_ID, MOTOR_RIGHT_ID);
 
     rclcpp::init(argc, argv);
 
-    auto velocityCmdNode = std::make_shared<VelocityCmdNode>();
-    rclcpp::spin(velocityCmdNode);
+    auto velocitycmd = std::make_shared<VelocityCmdNode>();
+    rclcpp::spin(velocitycmd);
     rclcpp::shutdown();
 
     // Disable Torque of DYNAMIXEL
     packetHandler->write1ByteTxRx(
         portHandler,
-        BROADCAST_ID,
+        MOTOR_LEFT_ID,
+        ADDR_TORQUE_ENABLE,
+        0,
+        &dxl_error);
+
+    packetHandler->write1ByteTxRx(
+        portHandler,
+        MOTOR_RIGHT_ID,
         ADDR_TORQUE_ENABLE,
         0,
         &dxl_error);

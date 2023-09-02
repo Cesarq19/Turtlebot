@@ -1,5 +1,5 @@
-#ifndef VELOCITY_CMD_NODE_HPP_
-#define VELOCITY_CMD_NODE_HPP_
+#ifndef TURTLEBOT3_MOBILITY__VELOCITY_CMD_NODE_HPP_
+#define TURTLEBOT3_MOBILITY__VELOCITY_CMD_NODE_HPP_
 
 #include <array>
 #include <chrono>
@@ -11,9 +11,7 @@
 #include <queue>
 
 #include <geometry_msgs/msg/twist.hpp>
-#include <tf2_ros/transform_broadcaster.h>
 #include "rclcpp/rclcpp.hpp"
-#include "rcutils/cmdline_parser.h"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 
 class VelocityCmdNode : public rclcpp::Node
@@ -23,9 +21,12 @@ class VelocityCmdNode : public rclcpp::Node
         virtual ~VelocityCmdNode();
 
     private:
+        void setupMotors(uint32_t dxl_id_1, uint8_t dxl_id_2);
         void cmd_vel_callback();
+        int32_t linear_velocity_;
+        int32_t angular_velocity_;
         rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
 
 
 }
-#endif
+#endif // TURTLEBOT3_MOBILITY__VELOCITY_CMD_NODE_HPP_
