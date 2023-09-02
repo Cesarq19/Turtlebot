@@ -26,7 +26,5 @@ class VelocityCmdNode : public rclcpp::Node
         int32_t linear_velocity_;
         int32_t angular_velocity_;
         rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
-
-
-}
+};
 #endif // TURTLEBOT3_MOBILITY__VELOCITY_CMD_NODE_HPP_
