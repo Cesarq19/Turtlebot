@@ -17,8 +17,8 @@
 #define PROTOCOL_VERSION 2.0 // Default Protocol version of DYNAMIXEL X series.
 
 // Default setting
-#define MOTOR_LEFT_ID 0
-#define MOTOR_RIGHT_ID 1
+#define MOTOR_LEFT_ID 1
+#define MOTOR_RIGHT_ID 0
 #define BAUDRATE 57600             // Default Baudrate of DYNAMIXEL X series
 #define DEVICE_NAME "/dev/ttyUSB0" // [Linux]: "/dev/ttyUSB*", [Windows]: "COM*"
 
@@ -46,7 +46,8 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
             linear_velocity_ = static_cast<int32_t>(msg->linear.x * 100);
             angular_velocity_ = static_cast<int32_t>(msg->angular.z * 100);
 
-
+            int32_t velocity_left = linear_velocity_ - angular_velocity_;
+            int32_t velocity_right = linear_velocity_ + angular_velocity_;
 
             // Write Goal Velocity
             dxl_comm_result =
@@ -54,7 +55,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
                     portHandler,
                     MOTOR_LEFT_ID,
                     ADDR_GOAL_VELOCITY,
-                    linear_velocity_ - angular_velocity_,
+                    velocity_left,
                     &dxl_error);
 
             dxl_comm_result =
@@ -62,12 +63,12 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
                     portHandler,
                     MOTOR_RIGHT_ID,
                     ADDR_GOAL_VELOCITY,
-                    linear_velocity_ + angular_velocity_,
+                    velocity_right,
                     &dxl_error);
 
             RCLCPP_INFO(
                 this->get_logger(),
-                "lin_vel: %d ang_vel: %d" ,linear_velocity_, angular_velocity_);
+                "left_vel: %d right_vel: %d" , velocity_left, velocity_right);
         });
 }
 
