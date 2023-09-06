@@ -77,31 +77,6 @@ VelocityCmdNode::~VelocityCmdNode()
 
 void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
 {
-    // Change to Velocity Control in the motors
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
-        dxl_id_1,
-        ADDR_OPERATING_MODE,
-        1,
-        &dxl_error);
-
-    if (dxl_comm_result != COMM_SUCCESS)
-    {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
-    }
-
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
-        dxl_id_2,
-        ADDR_OPERATING_MODE,
-        1,
-        &dxl_error);
-
-    if (dxl_comm_result != COMM_SUCCESS)
-    {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
-    }
-
     // Enable Torque of Dynamixels
     dxl_comm_result = packetHandler->write1ByteTxRx(
         portHandler,
@@ -133,6 +108,31 @@ void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
     else
     {
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to enable torque.");
+    }
+    
+    // Change to Velocity Control in the motors
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        dxl_id_1,
+        ADDR_OPERATING_MODE,
+        1,
+        &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
+    }
+
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        dxl_id_2,
+        ADDR_OPERATING_MODE,
+        1,
+        &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
     }
 }
 
