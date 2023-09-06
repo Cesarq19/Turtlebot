@@ -63,7 +63,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
                     portHandler,
                     MOTOR_RIGHT_ID,
                     ADDR_GOAL_VELOCITY,
-                    velocity_right,
+                    -velocity_right,
                     &dxl_error);
 
             RCLCPP_INFO(
