@@ -63,7 +63,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
                     linear_velocity_ + angular_velocity_,
                     &dxl_error);
 
-            RCLCPP_DEBUG(
+            RCLCPP_INFO(
                 this->get_logger(),
                 "lin_vel: %f ang_vel: %f ", msg->linear.x, msg->angular.z);
         });
