@@ -20,7 +20,6 @@ find_package(dynamixel_sdk REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(rcutils REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
@@ -32,42 +31,44 @@ include_directories(
   include
 )
 
-add_library(${PROJECT_NAME}_lib
-  "src/velocity_cmd_node.cpp"
-)
 
 set(DEPENDENCIES
   "dynamixel_sdk"
   "geometry_msgs"
   "message_filters"
   "rclcpp"
-  "rcutils"
   "sensor_msgs"
   "std_msgs"
   "std_srvs"
 )
 
-target_link_libraries(${PROJECT_NAME}_lib)
-ament_target_dependencies(${PROJECT_NAME}_lib ${DEPENDENCIES})
+set(EXEC_NAME "turtlebot3_mobility")
 
-set(EXECUTABLE_NAME "turtlebot3_mov")
-
-add_executable(${EXECUTABLE_NAME} src/velocity_cmd_node.cpp)
-target_link_libraries(${EXECUTABLE_NAME} ${PROJECT_NAME}_lib)
-ament_target_dependencies(${EXECUTABLE_NAME} ${DEPENDENCIES})
+add_executable(${EXEC_NAME} src/velocity_cmd_node.cpp)
+ament_target_dependencies(${EXEC_NAME} ${DEPENDENCIES})
 
 ################################################################################
 # Install
 ################################################################################
+install(TARGETS ${EXEC_NAME}
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 install(DIRECTORY param
   DESTINATION share/${PROJECT_NAME}
 )
 
-install(TARGETS ${EXECUTABLE_NAME}
-  DESTINATION lib/${PROJECT_NAME}
+install(DIRECTORY include/
+  DESTINATION include/
 )
 ################################################################################
 # Macro for ament package
 ################################################################################
 ament_export_include_directories(include)
+ament_export_dependencies(geometry_msgs)
+ament_export_dependencies(dynamixel_sdk)
+ament_export_dependencies(rclcpp)
+ament_export_dependencies(sensor_msgs)
+ament_export_dependencies(std_msgs)
+ament_export_dependencies(std_srvs)
 ament_package()

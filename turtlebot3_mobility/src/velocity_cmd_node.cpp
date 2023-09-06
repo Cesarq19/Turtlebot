@@ -2,12 +2,10 @@
 #include <memory>
 #include <string>
 
-#include <ros/ros.h>
 
 #include "turtlebot3_mobility/velocity_cmd_node.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include "rclcpp/rclcpp.hpp"
-#include "rcutils/cmdline_parser.h"
 
 // Control table address
 #define ADDR_OPERATING_MODE 11
