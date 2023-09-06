@@ -46,6 +46,8 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
             linear_velocity_ = static_cast<int32_t>(msg->linear.x * 100);
             angular_velocity_ = static_cast<int32_t>(msg->angular.z * 100);
 
+
+
             // Write Goal Velocity
             dxl_comm_result =
                 packetHandler->write4ByteTxRx(
@@ -65,7 +67,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
 
             RCLCPP_INFO(
                 this->get_logger(),
-                "lin_vel: %f ang_vel: %f ", msg->linear.x, msg->angular.z);
+                "lin_vel: %d ang_vel: %d" ,linear_velocity_, angular_velocity_);
         });
 }
 
