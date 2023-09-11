@@ -21,13 +21,16 @@
 
 using robotis::turtlebot3::DynamixelSDKWrapper;
 
-DynamixelSDKWrapper::DynamixelSDKWrapper(const Device & device)
-: device_(device)
+DynamixelSDKWrapper::DynamixelSDKWrapper(const Device &device)
+    : device_(device)
 {
-  if (init_dynamixel_sdk_handlers() == false) {
+  if (init_dynamixel_sdk_handlers() == false)
+  {
     LOG_ERROR("DynamixelSDKWrapper", "Failed to initialize SDK handlers");
     return;
-  } else {
+  }
+  else
+  {
     LOG_DEBUG("DynamixelSDKWrapper", "Success to initilize SDK handlers");
   }
 }
@@ -37,32 +40,22 @@ DynamixelSDKWrapper::~DynamixelSDKWrapper()
   portHandler_->closePort();
 }
 
-bool DynamixelSDKWrapper::is_connected_to_device()
-{
-  uint8_t data[2];
-  return this->read_register(device_.id, 0, 2, &data[0]);
-}
-
-void DynamixelSDKWrapper::init_read_memory(const uint16_t & start_addr, const uint16_t & length)
-{
-  read_memory_.start_addr = start_addr;
-  read_memory_.length = length;
-  read_memory_.data = &read_data_[0];
-}
-
 void DynamixelSDKWrapper::read_data_set()
 {
-  const char * log = NULL;
+  const char *log = NULL;
   bool ret = this->read_register(
-    device_.id,
-    read_memory_.start_addr,
-    read_memory_.length,
-    &read_data_buffer_[0],
-    &log);
+      device_.id,
+      read_memory_.start_addr,
+      read_memory_.length,
+      &read_data_buffer_[0],
+      &log);
 
-  if (ret == false) {
+  if (ret == false)
+  {
     LOG_ERROR("DynamixelSDKWrapper", "Failed to read[%s]", log);
-  } else {
+  }
+  else
+  {
     std::lock_guard<std::mutex> lock(read_data_mutex_);
     std::copy(read_data_buffer_, read_data_buffer_ + READ_DATA_SIZE, read_data_);
     LOG_DEBUG("DynamixelSDKWrapper", "Succeeded to read");
@@ -70,21 +63,25 @@ void DynamixelSDKWrapper::read_data_set()
 }
 
 bool DynamixelSDKWrapper::set_data_to_device(
-  const uint16_t & addr,
-  const uint16_t & length,
-  uint8_t * get_data,
-  std::string * msg)
+    const uint16_t &addr,
+    const uint16_t &length,
+    uint8_t *get_data,
+    std::string *msg)
 {
-  const char * log = nullptr;
+  const char *log = nullptr;
   bool ret = false;
 
   std::lock_guard<std::mutex> lock(write_data_mutex_);
+
   ret = write_register(device_.id, addr, length, get_data, &log);
 
-  if (ret == true) {
+  if (ret == true)
+  {
     *msg = "Succeeded to write data";
     return true;
-  } else {
+  }
+  else
+  {
     *msg = "Failed to write data" + std::string(log);
     return false;
   }
@@ -96,18 +93,24 @@ bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
 {
   portHandler_ = dynamixel::PortHandler::getPortHandler(device_.usb_port.c_str());
   packetHandler_ =
-    dynamixel::PacketHandler::getPacketHandler(static_cast<int>(device_.protocol_version));
+      dynamixel::PacketHandler::getPacketHandler(static_cast<int>(device_.protocol_version));
 
-  if (portHandler_->openPort()) {
+  if (portHandler_->openPort())
+  {
     LOG_INFO("DynamixelSDKWrapper", "Succeeded to open the port(%s)!", device_.usb_port.c_str());
-  } else {
+  }
+  else
+  {
     LOG_ERROR("DynamixelSDKWrapper", "Failed to open the port(%s)!", device_.usb_port.c_str());
     return false;
   }
 
-  if (portHandler_->setBaudRate(static_cast<int>(device_.baud_rate))) {
+  if (portHandler_->setBaudRate(static_cast<int>(device_.baud_rate)))
+  {
     LOG_INFO("DynamixelSDKWrapper", "Succeeded to change the baudrate!");
-  } else {
+  }
+  else
+  {
     LOG_ERROR("DynamixelSDKWrapper", "Failed to change the baudrate(%d)!", device_.baud_rate);
     return false;
   }
@@ -115,12 +118,13 @@ bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
   return true;
 }
 
+
 bool DynamixelSDKWrapper::read_register(
-  uint8_t id,
-  uint16_t address,
-  uint16_t length,
-  uint8_t * data_basket,
-  const char ** log)
+    uint8_t id,
+    uint16_t address,
+    uint16_t length,
+    uint8_t *data_basket,
+    const char **log)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
@@ -128,20 +132,31 @@ bool DynamixelSDKWrapper::read_register(
   uint8_t dxl_error = 0;
 
   dxl_comm_result = packetHandler_->readTxRx(
-    portHandler_,
-    id,
-    address,
-    length,
-    data_basket,
-    &dxl_error);
+      portHandler_,
+      id,
+      address,
+      length,
+      data_basket,
+      &dxl_error);
 
-  if (dxl_comm_result != COMM_SUCCESS) {
-    if (log != NULL) {*log = packetHandler_->getTxRxResult(dxl_comm_result);}
+  if (dxl_comm_result != COMM_SUCCESS)
+  {
+    if (log != NULL)
+    {
+      *log = packetHandler_->getTxRxResult(dxl_comm_result);
+    }
     return false;
-  } else if (dxl_error != 0) {
-    if (log != NULL) {*log = packetHandler_->getRxPacketError(dxl_error);}
+  }
+  else if (dxl_error != 0)
+  {
+    if (log != NULL)
+    {
+      *log = packetHandler_->getRxPacketError(dxl_error);
+    }
     return false;
-  } else {
+  }
+  else
+  {
     return true;
   }
 
@@ -149,11 +164,11 @@ bool DynamixelSDKWrapper::read_register(
 }
 
 bool DynamixelSDKWrapper::write_register(
-  uint8_t id,
-  uint16_t address,
-  uint16_t length,
-  uint8_t * data,
-  const char ** log)
+    uint8_t id,
+    uint16_t address,
+    uint16_t length,
+    uint8_t *data,
+    const char **log)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
@@ -161,20 +176,31 @@ bool DynamixelSDKWrapper::write_register(
   uint8_t dxl_error = 0;
 
   dxl_comm_result = packetHandler_->writeTxRx(
-    portHandler_,
-    id,
-    address,
-    length,
-    data,
-    &dxl_error);
+      portHandler_,
+      id,
+      address,
+      length,
+      data,
+      &dxl_error);
 
-  if (dxl_comm_result != COMM_SUCCESS) {
-    if (log != NULL) {*log = packetHandler_->getTxRxResult(dxl_comm_result);}
+  if (dxl_comm_result != COMM_SUCCESS)
+  {
+    if (log != NULL)
+    {
+      *log = packetHandler_->getTxRxResult(dxl_comm_result);
+    }
     return false;
-  } else if (dxl_error != 0) {
-    if (log != NULL) {*log = packetHandler_->getRxPacketError(dxl_error);}
+  }
+  else if (dxl_error != 0)
+  {
+    if (log != NULL)
+    {
+      *log = packetHandler_->getRxPacketError(dxl_error);
+    }
     return false;
-  } else {
+  }
+  else
+  {
     return true;
   }
 

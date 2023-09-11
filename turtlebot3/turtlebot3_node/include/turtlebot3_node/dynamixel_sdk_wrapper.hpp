@@ -13,6 +13,7 @@
 // limitations under the License.
 //
 // Author: Darby Lim
+// Changed by: Cesar Q
 
 #ifndef TURTLEBOT3_NODE__DYNAMIXEL_SDK_WRAPPER_HPP_
 #define TURTLEBOT3_NODE__DYNAMIXEL_SDK_WRAPPER_HPP_
@@ -49,7 +50,6 @@ public:
   typedef struct
   {
     std::string usb_port;
-    uint8_t id;
     int baud_rate;
     float protocol_version;
   } Device;
@@ -96,10 +96,8 @@ public:
     uint8_t * get_data,
     std::string * msg);
 
-  void init_read_memory(const uint16_t & start_addr, const uint16_t & length);
   void read_data_set();
 
-  bool is_connected_to_device();
 
 private:
   bool init_dynamixel_sdk_handlers();
