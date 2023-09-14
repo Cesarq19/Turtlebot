@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 // Author: Darby Lim
-// Changed by: Cesar Q
 
 #include <chrono>
 #include <memory>
@@ -31,7 +30,7 @@ void help_print()
   printf("turtlebot3_node [-i usb_port] [-h]\n");
   printf("options:\n");
   printf("-h : Print this help function.\n");
-  printf("-i usb_port: Connected USB port with U2D2.");
+  printf("-i usb_port: Connected USB port with OpenCR.");
 }
 
 int main(int argc, char * argv[])

@@ -14,46 +14,40 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
-#define TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#ifndef TURTLEBOT3_NODE__DEVICES__MOTOR_POWER_HPP_
+#define TURTLEBOT3_NODE__DEVICES__MOTOR_POWER_HPP_
 
 #include <memory>
 #include <string>
-#include <utility>
 
-#include <rclcpp/rclcpp.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 
-#include "turtlebot3_node/control_table.hpp"
-#include "turtlebot3_node/dynamixel_sdk_wrapper.hpp"
+#include "turtlebot3_node/devices/devices.hpp"
 
 namespace robotis
 {
 namespace turtlebot3
 {
-extern const ControlTable extern_control_table;
-namespace sensors
+namespace devices
 {
-class Sensors
+class MotorPower : public Devices
 {
 public:
-  explicit Sensors(
+  static void request(
+    rclcpp::Client<std_srvs::srv::SetBool>::SharedPtr client,
+    std_srvs::srv::SetBool::Request req);
+
+  explicit MotorPower(
     std::shared_ptr<rclcpp::Node> & nh,
-    const std::string & frame_id = "")
-  : nh_(nh),
-    frame_id_(frame_id)
-  {
-  }
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper,
+    const std::string & server_name = "motor_power");
 
-  virtual void publish(
-    const rclcpp::Time & now,
-    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) = 0;
+  void command(const void * request, void * response) override;
 
-protected:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::string frame_id_;
-  rclcpp::QoS qos_ = rclcpp::QoS(rclcpp::KeepLast(10));
+private:
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr srv_;
 };
-}  // namespace sensors
+}  // namespace devices
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#endif  // TURTLEBOT3_NODE__DEVICES__MOTOR_POWER_HPP_

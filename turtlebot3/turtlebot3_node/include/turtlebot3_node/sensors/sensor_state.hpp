@@ -14,46 +14,48 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
-#define TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#ifndef TURTLEBOT3_NODE__SENSORS__SENSOR_STATE_HPP_
+#define TURTLEBOT3_NODE__SENSORS__SENSOR_STATE_HPP_
+
+#include <turtlebot3_msgs/msg/sensor_state.hpp>
 
 #include <memory>
 #include <string>
-#include <utility>
 
-#include <rclcpp/rclcpp.hpp>
-
-#include "turtlebot3_node/control_table.hpp"
-#include "turtlebot3_node/dynamixel_sdk_wrapper.hpp"
+#include "turtlebot3_node/sensors/sensors.hpp"
 
 namespace robotis
 {
 namespace turtlebot3
 {
-extern const ControlTable extern_control_table;
 namespace sensors
 {
-class Sensors
+class SensorState : public Sensors
 {
 public:
-  explicit Sensors(
+  explicit SensorState(
     std::shared_ptr<rclcpp::Node> & nh,
-    const std::string & frame_id = "")
-  : nh_(nh),
-    frame_id_(frame_id)
-  {
-  }
+    const std::string & topic_name = "sensor_state",
+    const uint8_t & bumper_forward = 0,
+    const uint8_t & bumper_backward = 0,
+    const uint8_t & illumination = 0,
+    const uint8_t & cliff = 0,
+    const uint8_t & sonar = 0);
 
-  virtual void publish(
+  void publish(
     const rclcpp::Time & now,
-    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) = 0;
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) override;
 
-protected:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::string frame_id_;
-  rclcpp::QoS qos_ = rclcpp::QoS(rclcpp::KeepLast(10));
+private:
+  rclcpp::Publisher<turtlebot3_msgs::msg::SensorState>::SharedPtr pub_;
+
+  uint8_t bumper_forward_;
+  uint8_t bumper_backward_;
+  uint8_t illumination_;
+  uint8_t cliff_;
+  uint8_t sonar_;
 };
 }  // namespace sensors
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#endif  // TURTLEBOT3_NODE__SENSORS__SENSOR_STATE_HPP_

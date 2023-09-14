@@ -33,8 +33,8 @@ TurtleBot3::TurtleBot3(const std::string & usb_port)
 
   add_motors();
   add_wheels();
-  //add_sensors();
-  //add_devices();
+  add_sensors();
+  add_devices();
 
   run();
 }
@@ -51,30 +51,53 @@ TurtleBot3::Motors * TurtleBot3::get_motors()
 
 void TurtleBot3::init_dynamixel_sdk_wrapper(const std::string & usb_port)
 {
-  DynamixelSDKWrapper::Device u2d2 = {usb_port, 57600, 2.0f};
+  DynamixelSDKWrapper::Device opencr = {usb_port, 57600, 2.0f};
 
-  this->declare_parameter<int>("u2d2.baud_rate");
-  this->declare_parameter<float>("u2d2.protocol_version");
+  this->declare_parameter<uint8_t>("opencr.id");
+  this->declare_parameter<int>("opencr.baud_rate");
+  this->declare_parameter<float>("opencr.protocol_version");
 
-  this->get_parameter_or<int>("u2d2.baud_rate", u2d2.baud_rate, 57600);
-  this->get_parameter_or<float>("u2d2.protocol_version", u2d2.protocol_version, 2.0f);
+  //this->get_parameter_or<uint8_t>("opencr.id", opencr.id, 200);
+  this->get_parameter_or<int>("opencr.baud_rate", opencr.baud_rate, 57600);
+  this->get_parameter_or<float>("opencr.protocol_version", opencr.protocol_version, 2.0f);
 
   RCLCPP_INFO(this->get_logger(), "Init DynamixelSDKWrapper");
 
-  dxl_sdk_wrapper_ = std::make_shared<DynamixelSDKWrapper>(u2d2);
+  dxl_sdk_wrapper_ = std::make_shared<DynamixelSDKWrapper>(opencr);
 
+  /*dxl_sdk_wrapper_->init_read_memory(
+    extern_control_table.millis.addr,
+    (extern_control_table.profile_acceleration_right.addr - extern_control_table.millis.addr) +
+    extern_control_table.profile_acceleration_right.length
+  );*/
 }
 
 void TurtleBot3::check_device_status()
 {
+  if (dxl_sdk_wrapper_->is_connected_to_device()) {
+    std::string sdk_msg;
+    /*uint8_t reset = 1;
+
+    dxl_sdk_wrapper_->set_data_to_device(
+      extern_control_table.imu_re_calibration.addr,
+      extern_control_table.imu_re_calibration.length,
+      &reset,
+      &sdk_msg);*/
+
+    RCLCPP_INFO(this->get_logger(), "Start Calibration of Gyro");
+    rclcpp::sleep_for(std::chrono::seconds(5));
+    RCLCPP_INFO(this->get_logger(), "Calibration End");
+  } else {
+    RCLCPP_ERROR(this->get_logger(), "Failed connection with Devices");
+    rclcpp::shutdown();
+    return;
+  }
 
   const int8_t NOT_CONNECTED_MOTOR = -1;
 
   int8_t device_status = dxl_sdk_wrapper_->get_data_from_device<int8_t>(
     extern_control_table.device_status.addr,
     extern_control_table.device_status.length);
-
-  // Poner un status messages con failure para cada motor
 
   switch (device_status) {
     case NOT_CONNECTED_MOTOR:
@@ -119,8 +142,74 @@ void TurtleBot3::add_sensors()
 {
   RCLCPP_INFO(this->get_logger(), "Add Sensors");
 
+  uint8_t is_connected_bumper_1 = 0;
+  uint8_t is_connected_bumper_2 = 0;
+  uint8_t is_connected_illumination = 0;
+  uint8_t is_connected_ir = 0;
+  uint8_t is_connected_sonar = 0;
+
+  this->declare_parameter<uint8_t>("sensors.bumper_1");
+  this->declare_parameter<uint8_t>("sensors.bumper_2");
+  this->declare_parameter<uint8_t>("sensors.illumination");
+  this->declare_parameter<uint8_t>("sensors.ir");
+  this->declare_parameter<uint8_t>("sensors.sonar");
+
+  this->get_parameter_or<uint8_t>(
+    "sensors.bumper_1",
+    is_connected_bumper_1,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.bumper_2",
+    is_connected_bumper_2,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.illumination",
+    is_connected_illumination,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.ir",
+    is_connected_ir,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.sonar",
+    is_connected_sonar,
+    0);
+
+  //sensors_.push_back(
+    //new sensors::BatteryState(
+      //node_handle_,
+      //"battery_state"));
+
+  sensors_.push_back(
+    new sensors::Imu(
+      node_handle_,
+      "imu",
+      "magnetic_field",
+      "imu_link"));
+
+  //sensors_.push_back(
+    //new sensors::SensorState(
+      //node_handle_,
+      //"sensor_state",
+      //is_connected_bumper_1,
+      //is_connected_bumper_2,
+      //is_connected_illumination,
+      //is_connected_ir,
+      //is_connected_sonar));
+
   sensors_.push_back(new sensors::JointState(node_handle_, "joint_states", "base_link"));
 }
+
+//void TurtleBot3::add_devices()
+//{
+  //RCLCPP_INFO(this->get_logger(), "Add Devices");
+  //devices_["motor_power"] =
+    //new devices::MotorPower(node_handle_, dxl_sdk_wrapper_, "motor_power");
+  //devices_["reset"] =
+    //new devices::Reset(node_handle_, dxl_sdk_wrapper_, "reset");
+  //devices_["sound"] =
+    //new devices::Sound(node_handle_, dxl_sdk_wrapper_, "sound");
+//}
 
 void TurtleBot3::run()
 {
@@ -133,6 +222,44 @@ void TurtleBot3::run()
   cmd_vel_callback();
 }
 
+void TurtleBot3::publish_timer(const std::chrono::milliseconds timeout)
+{
+  publish_timer_ = this->create_wall_timer(
+    timeout,
+    [this]() -> void
+    {
+      rclcpp::Time now = this->now();
+
+      dxl_sdk_wrapper_->read_data_set();
+
+      for (const auto & sensor : sensors_) {
+        sensor->publish(now, dxl_sdk_wrapper_);
+      }
+    }
+  );
+}
+
+void TurtleBot3::heartbeat_timer(const std::chrono::milliseconds timeout)
+{
+  heartbeat_timer_ = this->create_wall_timer(
+    timeout,
+    [this]() -> void
+    {
+      static uint8_t count = 0;
+      std::string msg;
+
+      //dxl_sdk_wrapper_->set_data_to_device(
+        //extern_control_table.heartbeat.addr,
+        //extern_control_table.heartbeat.length,
+        //&count,
+        //&msg);
+
+      RCLCPP_DEBUG(this->get_logger(), "hearbeat count : %d, msg : %s", count, msg.c_str());
+
+      count++;
+    }
+  );
+}
 
 void TurtleBot3::parameter_event_callback()
 {
@@ -172,15 +299,12 @@ void TurtleBot3::parameter_event_callback()
           data.dword[0] = static_cast<int32_t>(motors_.profile_acceleration);
           data.dword[1] = static_cast<int32_t>(motors_.profile_acceleration);
 
-          uint16_t start_addr = extern_control_table.profile_acceleration_left.addr;
-          uint16_t addr_length =
-            (extern_control_table.profile_acceleration_right.addr -
-            extern_control_table.profile_acceleration_left.addr) +
-            extern_control_table.profile_acceleration_right.length;
+          uint16_t address = extern_control_table.profile_acceleration.addr;
+          uint16_t lenght = extern_control_table.profile_acceleration.length;
 
           uint8_t * p_data = &data.byte[0];
 
-          dxl_sdk_wrapper_->set_data_to_device(start_addr, addr_length, p_data, &sdk_msg);
+          dxl_sdk_wrapper_->set_data_to_device(address, lenght, p_data, &sdk_msg);
 
           RCLCPP_INFO(
             this->get_logger(),

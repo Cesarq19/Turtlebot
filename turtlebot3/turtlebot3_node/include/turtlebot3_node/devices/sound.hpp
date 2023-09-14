@@ -14,29 +14,38 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
-#define TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#ifndef TURTLEBOT3_NODE__DEVICES__SOUND_HPP_
+#define TURTLEBOT3_NODE__DEVICES__SOUND_HPP_
 
+#include <turtlebot3_msgs/srv/sound.hpp>
 #include <memory>
-
-#include <rclcpp/rclcpp.hpp>
-
-#include "turtlebot3_node/odometry.hpp"
+#include <string>
+#include "turtlebot3_node/devices/devices.hpp"
 
 namespace robotis
 {
 namespace turtlebot3
 {
-class DiffDriveController : public rclcpp::Node
+namespace devices
+{
+class Sound : public Devices
 {
 public:
-  explicit DiffDriveController(const float wheel_seperation, const float wheel_radius);
-  virtual ~DiffDriveController() {}
+  static void request(
+    rclcpp::Client<turtlebot3_msgs::srv::Sound>::SharedPtr client,
+    turtlebot3_msgs::srv::Sound::Request req);
+
+  explicit Sound(
+    std::shared_ptr<rclcpp::Node> & nh,
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper,
+    const std::string & server_name = "sound");
+
+  void command(const void * request, void * response) override;
 
 private:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::unique_ptr<Odometry> odometry_;
+  rclcpp::Service<turtlebot3_msgs::srv::Sound>::SharedPtr srv_;
 };
+}  // namespace devices
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#endif  // TURTLEBOT3_NODE__DEVICES__SOUND_HPP_

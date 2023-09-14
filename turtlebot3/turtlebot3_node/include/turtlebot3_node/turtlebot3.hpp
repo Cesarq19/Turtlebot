@@ -37,8 +37,17 @@
 #include <turtlebot3_msgs/msg/sensor_state.hpp>
 
 #include "turtlebot3_node/control_table.hpp"
+#include "turtlebot3_node/devices/devices.hpp"
+#include "turtlebot3_node/devices/motor_power.hpp"
+#include "turtlebot3_node/devices/reset.hpp"
+#include "turtlebot3_node/devices/sound.hpp"
 #include "turtlebot3_node/dynamixel_sdk_wrapper.hpp"
 #include "turtlebot3_node/odometry.hpp"
+#include "turtlebot3_node/sensors/battery_state.hpp"
+#include "turtlebot3_node/sensors/imu.hpp"
+#include "turtlebot3_node/sensors/joint_state.hpp"
+#include "turtlebot3_node/sensors/sensor_state.hpp"
+#include "turtlebot3_node/sensors/sensors.hpp"
 
 namespace robotis
 {
@@ -71,6 +80,7 @@ private:
   void check_device_status();
 
   void add_sensors();
+  void add_devices();
   void add_motors();
   void add_wheels();
 
@@ -86,7 +96,9 @@ private:
   Motors motors_;
 
   std::shared_ptr<DynamixelSDKWrapper> dxl_sdk_wrapper_;
+
   std::list<sensors::Sensors *> sensors_;
+  std::map<std::string, devices::Devices *> devices_;
 
   std::unique_ptr<Odometry> odom_;
 

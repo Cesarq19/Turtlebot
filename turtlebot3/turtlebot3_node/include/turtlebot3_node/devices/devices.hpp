@@ -14,29 +14,45 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
-#define TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#ifndef TURTLEBOT3_NODE__DEVICES__DEVICES_HPP_
+#define TURTLEBOT3_NODE__DEVICES__DEVICES_HPP_
 
 #include <memory>
+#include <string>
+#include <utility>
 
 #include <rclcpp/rclcpp.hpp>
 
-#include "turtlebot3_node/odometry.hpp"
+#include "turtlebot3_node/control_table.hpp"
+#include "turtlebot3_node/dynamixel_sdk_wrapper.hpp"
+
 
 namespace robotis
 {
 namespace turtlebot3
 {
-class DiffDriveController : public rclcpp::Node
+extern const ControlTable extern_control_table;
+namespace devices
+{
+class Devices
 {
 public:
-  explicit DiffDriveController(const float wheel_seperation, const float wheel_radius);
-  virtual ~DiffDriveController() {}
+  explicit Devices(
+    std::shared_ptr<rclcpp::Node> & nh,
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper)
+  : nh_(nh),
+    dxl_sdk_wrapper_(dxl_sdk_wrapper)
+  {
+  }
 
-private:
+  virtual void command(const void * request, void * response) = 0;
+
+protected:
   std::shared_ptr<rclcpp::Node> nh_;
-  std::unique_ptr<Odometry> odometry_;
+  std::shared_ptr<DynamixelSDKWrapper> dxl_sdk_wrapper_;
+  rclcpp::QoS qos_ = rclcpp::QoS(rclcpp::ServicesQoS());
 };
+}  // namespace devices
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#endif  // TURTLEBOT3_NODE__DEVICES__DEVICES_HPP_

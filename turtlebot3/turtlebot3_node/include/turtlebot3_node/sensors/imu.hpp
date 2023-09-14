@@ -14,46 +14,41 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
-#define TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#ifndef TURTLEBOT3_NODE__SENSORS__IMU_HPP_
+#define TURTLEBOT3_NODE__SENSORS__IMU_HPP_
 
 #include <memory>
 #include <string>
-#include <utility>
 
-#include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/imu.hpp>
+#include <sensor_msgs/msg/magnetic_field.hpp>
 
-#include "turtlebot3_node/control_table.hpp"
-#include "turtlebot3_node/dynamixel_sdk_wrapper.hpp"
+#include "turtlebot3_node/sensors/sensors.hpp"
 
 namespace robotis
 {
 namespace turtlebot3
 {
-extern const ControlTable extern_control_table;
 namespace sensors
 {
-class Sensors
+class Imu : public Sensors
 {
 public:
-  explicit Sensors(
+  explicit Imu(
     std::shared_ptr<rclcpp::Node> & nh,
-    const std::string & frame_id = "")
-  : nh_(nh),
-    frame_id_(frame_id)
-  {
-  }
+    const std::string & imu_topic_name = "imu",
+    const std::string & mag_topic_name = "magnetic_field",
+    const std::string & frame_id = "imu_link");
 
-  virtual void publish(
+  void publish(
     const rclcpp::Time & now,
-    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) = 0;
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) override;
 
-protected:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::string frame_id_;
-  rclcpp::QoS qos_ = rclcpp::QoS(rclcpp::KeepLast(10));
+private:
+  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr mag_pub_;
 };
 }  // namespace sensors
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#endif  // TURTLEBOT3_NODE__SENSORS__IMU_HPP_

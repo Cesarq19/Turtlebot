@@ -14,29 +14,40 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
-#define TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#ifndef TURTLEBOT3_NODE__DEVICES__RESET_HPP_
+#define TURTLEBOT3_NODE__DEVICES__RESET_HPP_
 
 #include <memory>
+#include <string>
 
-#include <rclcpp/rclcpp.hpp>
+#include <std_srvs/srv/trigger.hpp>
 
-#include "turtlebot3_node/odometry.hpp"
+#include "turtlebot3_node/devices/devices.hpp"
 
 namespace robotis
 {
 namespace turtlebot3
 {
-class DiffDriveController : public rclcpp::Node
+namespace devices
+{
+class Reset : public Devices
 {
 public:
-  explicit DiffDriveController(const float wheel_seperation, const float wheel_radius);
-  virtual ~DiffDriveController() {}
+  static void request(
+    rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr client,
+    std_srvs::srv::Trigger::Request req);
+
+  explicit Reset(
+    std::shared_ptr<rclcpp::Node> & nh,
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper,
+    const std::string & server_name = "reset");
+
+  void command(const void * request, void * response) override;
 
 private:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::unique_ptr<Odometry> odometry_;
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr srv_;
 };
+}  // namespace devices
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#endif  // TURTLEBOT3_NODE__DEVICES__RESET_HPP_

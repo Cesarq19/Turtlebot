@@ -14,29 +14,37 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
-#define TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#ifndef TURTLEBOT3_NODE__SENSORS__BATTERY_STATE_HPP_
+#define TURTLEBOT3_NODE__SENSORS__BATTERY_STATE_HPP_
+
+#include <sensor_msgs/msg/battery_state.hpp>
 
 #include <memory>
+#include <string>
 
-#include <rclcpp/rclcpp.hpp>
-
-#include "turtlebot3_node/odometry.hpp"
+#include "turtlebot3_node/sensors/sensors.hpp"
 
 namespace robotis
 {
 namespace turtlebot3
 {
-class DiffDriveController : public rclcpp::Node
+namespace sensors
+{
+class BatteryState : public Sensors
 {
 public:
-  explicit DiffDriveController(const float wheel_seperation, const float wheel_radius);
-  virtual ~DiffDriveController() {}
+  explicit BatteryState(
+    std::shared_ptr<rclcpp::Node> & nh,
+    const std::string & topic_name = "battery_state");
+
+  void publish(
+    const rclcpp::Time & now,
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) override;
 
 private:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::unique_ptr<Odometry> odometry_;
+  rclcpp::Publisher<sensor_msgs::msg::BatteryState>::SharedPtr pub_;
 };
+}  // namespace sensors
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_
+#endif  // TURTLEBOT3_NODE__SENSORS__BATTERY_STATE_HPP_

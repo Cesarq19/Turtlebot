@@ -14,46 +14,46 @@
 //
 // Author: Darby Lim
 
-#ifndef TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
-#define TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#ifndef TURTLEBOT3_NODE__SENSORS__JOINT_STATE_HPP_
+#define TURTLEBOT3_NODE__SENSORS__JOINT_STATE_HPP_
+
+#include <sensor_msgs/msg/joint_state.hpp>
 
 #include <memory>
 #include <string>
-#include <utility>
 
-#include <rclcpp/rclcpp.hpp>
-
-#include "turtlebot3_node/control_table.hpp"
-#include "turtlebot3_node/dynamixel_sdk_wrapper.hpp"
+#include "turtlebot3_node/sensors/sensors.hpp"
 
 namespace robotis
 {
 namespace turtlebot3
 {
-extern const ControlTable extern_control_table;
 namespace sensors
 {
-class Sensors
+constexpr uint8_t JOINT_NUM = 2;
+
+// ref) http://emanual.robotis.com/docs/en/dxl/x/xl430-w250/#goal-velocity104
+constexpr double RPM_TO_MS = 0.229 * 0.0034557519189487725;
+
+// 0.087890625[deg] * 3.14159265359 / 180 = 0.001533981f
+constexpr double TICK_TO_RAD = 0.001533981;
+
+class JointState : public Sensors
 {
 public:
-  explicit Sensors(
+  explicit JointState(
     std::shared_ptr<rclcpp::Node> & nh,
-    const std::string & frame_id = "")
-  : nh_(nh),
-    frame_id_(frame_id)
-  {
-  }
+    const std::string & topic_name = "joint_states",
+    const std::string & frame_id = "base_link");
 
-  virtual void publish(
+  void publish(
     const rclcpp::Time & now,
-    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) = 0;
+    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) override;
 
-protected:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::string frame_id_;
-  rclcpp::QoS qos_ = rclcpp::QoS(rclcpp::KeepLast(10));
+private:
+  rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr pub_;
 };
 }  // namespace sensors
 }  // namespace turtlebot3
 }  // namespace robotis
-#endif  // TURTLEBOT3_NODE__SENSORS__SENSORS_HPP_
+#endif  // TURTLEBOT3_NODE__SENSORS__JOINT_STATE_HPP_
