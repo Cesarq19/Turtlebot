@@ -43,6 +43,7 @@ DynamixelSDKWrapper::~DynamixelSDKWrapper()
 bool DynamixelSDKWrapper::is_connected_to_device()
 {
   uint8_t data[2];
+  bool connected_left = this->read_register(0, );
   return this->read_register(device_.id, 0, 2, &data[0]);
 }
 
@@ -73,102 +74,6 @@ void DynamixelSDKWrapper::read_data_set()
     std::copy(read_data_buffer_, read_data_buffer_ + READ_DATA_SIZE, read_data_);
     LOG_DEBUG("DynamixelSDKWrapper", "Succeeded to read");
   }
-}
-// set to device 2
-bool DynamixelSDKWrapper::set_data_to_device_2(
-    uint8_t id,
-    const uint16_t &addr,
-    const uint16_t &length,
-    uint8_t *get_data,
-    std::string *msg)
-{
-  const char *log = nullptr;
-  bool ret = false;
-  std::lock_guard<std::mutex> lock(write_data_mutex_);
-
-  ret = write_register(id, addr, length, get_data, &log);
-  
-  if (ret == true)
-  {
-    *msg = "Succeeded to write data";
-    return true;
-  }
-  else
-  {
-    *msg = "Failed to write data" + std::string(log);
-    return false;
-  }
-
-  return ret;
-}
-
-bool DynamixelSDKWrapper::set_data_to_device(
-    const uint16_t &addr,
-    const uint16_t &length,
-    uint8_t *get_data,
-    std::string *msg,
-    uint8_t port_wheel = 3)
-{
-  const char *log = nullptr;
-  bool ret = false;
-  bool ret2 = false;
-  uint8_t lenght_acc = 4;
-
-  std::lock_guard<std::mutex> lock(write_data_mutex_);
-
-  // Llanta derecha
-  if (port_wheel == 1)
-  {
-    ret = write_register(0, addr, length_acc, get_data, &log, port_wheel); //1
-  }
-  // Llanta izquierda
-  else if (port_wheel == 0)
-  {
-    ret = write_register(0, addr, length_acc, get_data, &log, port_wheel); //0
-  }
-  // Lo demas que no sea llanta no importa el id de los motores
-  else
-  {
-    ret = write_register(id, addr, length, get_data, &log);
-  }
-
-  // mode (0: velocity , 1: acceleration)
-
-  /*if (mode == 0)
-  {
-    // llanta izquierda
-    ret = write_register(0, addr, length_acc, get_data, &log);
-    // llanta derecha
-  }
-  else if (mode == 1)
-  {
-    // llanta izquierda 
-    ret = write_register(0, addr, length_acc, get_data, &log);
-
-
-  }*/
-  
-
-  // llanta izquierda
-  // calculo de llanta izquierda
-  // ret = write_register(0, addr, length, get_data, &log);
-
-  // llanta derecha
-  // calculo de llanta derecha
-  // ret = write_register(1, addr, length, get_data, &log);
-
-  if (ret == true)
-  {
-    *msg = "Succeeded to write data";
-    return true;
-  }
-  else
-  {
-    *msg = "Failed to write data" + std::string(log);
-    return false;
-  }
-
-  return ret;
 }
 
 bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
@@ -265,51 +170,6 @@ bool DynamixelSDKWrapper::write_motors(
     data,
     &dxl_error
   );
-
-  if (dxl_comm_result != COMM_SUCCESS)
-  {
-    if (log != NULL)
-    {
-      *log = packetHandler_->getTxRxResult(dxl_comm_result);
-    }
-    return false;
-  }
-  else if (dxl_error != 0)
-  {
-    if (log != NULL)
-    {
-      *log = packetHandler_->getRxPacketError(dxl_error);
-    }
-    return false;
-  }
-  else
-  {
-    return true;
-  }
-
-  return false;
-}
-
-bool DynamixelSDKWrapper::write_register(
-    uint8_t id,
-    uint16_t address,
-    uint16_t length,
-    uint8_t *data,
-    const char **log,
-    uint8_t port_wheel = 3)
-{
-  std::lock_guard<std::mutex> lock(sdk_mutex_);
-
-  int32_t dxl_comm_result = COMM_TX_FAIL;
-  uint8_t dxl_error = 0;
-
-  dxl_comm_result = packetHandler_->writeTxRx(
-      portHandler_,
-      id,
-      address,
-      length,
-      data,
-      &dxl_error);
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
