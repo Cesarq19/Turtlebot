@@ -127,6 +127,14 @@ private:
     uint8_t * data,
     const char ** log = NULL);
 
+  bool write_motors(
+    uint8_t id,
+    uint16_t address,
+    uint16_t length,
+    uint32_t data,
+    const char ** log = NULL
+  );
+
   dynamixel::PortHandler * portHandler_;
   dynamixel::PacketHandler * packetHandler_;
 
