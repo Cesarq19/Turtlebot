@@ -95,13 +95,13 @@ bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
   return true;
 }
 
-bool read_motors(
+bool DynamixelSDKWrapper::read_motors(
     uint8_t id,
     uint16_t address,
     uint16_t length,
     int32_t data)
 {
-  std::lock_guard<std::mutex> lock(read_mutex_);
+  std::lock_guard<std::mutex> lock(sdk_mutex_);
 
   int32_t dxl_comm_result = COMM_RX_FAIL;
   uint8_t dxl_error = 0;
@@ -179,7 +179,7 @@ bool DynamixelSDKWrapper::write_motors(
     uint16_t lenght,
     int32_t data)
 {
-  std::lock_guard<std::mutex> lock(write_mutex_);
+  std::lock_guard<std::mutex> lock(sdk_mutex_);
 
   int32_t dxl_comm_result = COMM_TX_FAIL;
   uint8_t dxl_error = 0;
