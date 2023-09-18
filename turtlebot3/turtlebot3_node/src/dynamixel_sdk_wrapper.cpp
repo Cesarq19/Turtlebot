@@ -100,7 +100,7 @@ bool DynamixelSDKWrapper::read_motors(
     uint16_t address,
     uint16_t length,
     uint32_t data,
-    const char **log = NULL)
+    std::string **msg)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
@@ -187,7 +187,7 @@ bool DynamixelSDKWrapper::write_motors(
     uint16_t address,
     uint16_t lenght,
     uint32_t data,
-    const char **log = NULL)
+    std::string **log)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
