@@ -107,8 +107,8 @@ bool read_motors(
   int32_t dxl_comm_result = COMM_RX_FAIL;
   uint8_t dxl_error = 0;
 
-  dxl_comm_result = dynamixel::packetHandler_->read4ByteTxRx(
-      dynamixel::portHandler_,
+  dxl_comm_result = DynamixelSDKWrapper::packetHandler_->read4ByteTxRx(
+      DynamixelSDKWrapper::portHandler_,
       id,
       address,
       data,
@@ -185,8 +185,8 @@ bool write_motors(
 
   int32_t dxl_comm_result = COMM_TX_FAIL;
 
-  dxl_comm_result = dynamixel::packetHandler_->write4ByteTxRx(
-      dynamixel::portHandler_,
+  dxl_comm_result = DynamixelSDKWrapper::packetHandler_->write4ByteTxRx(
+      DynamixelSDKWrapper::portHandler_,
       id,
       address,
       data,
