@@ -42,13 +42,9 @@ void BatteryState::publish(
 
   msg->design_capacity = 1.8f;
 
-  msg->voltage = 0.01f * dxl_sdk_wrapper->get_data_from_device<int32_t>(
-    extern_control_table.battery_voltage.addr,
-    extern_control_table.battery_voltage.length);
+  msg->voltage = 0.01f * 1000;
 
-  msg->percentage = 0.01f * dxl_sdk_wrapper->get_data_from_device<int32_t>(
-    extern_control_table.battery_percentage.addr,
-    extern_control_table.battery_percentage.length);
+  msg->percentage = 0.01f * 1000;
 
   msg->voltage <= 7.0 ? msg->present = false : msg->present = true;
 
