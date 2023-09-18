@@ -119,8 +119,7 @@ namespace robotis
       std::mutex read_data_mutex_;
       std::mutex write_data_mutex_;
 
-      dynamixel::PortHandler *portHandler_;
-      dynamixel::PacketHandler *packetHandler_;
+      
 
     private:
       bool init_dynamixel_sdk_handlers();
@@ -156,6 +155,8 @@ namespace robotis
       } Memory;
 
       Memory read_memory_;
+      dynamixel::PortHandler *portHandler_;
+      dynamixel::PacketHandler *packetHandler_;
     };
   } // namespace turtlebot3
 } // namespace robotis
