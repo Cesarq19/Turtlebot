@@ -99,10 +99,9 @@ bool read_motors(
     uint8_t id,
     uint16_t address,
     uint16_t length,
-    int32_t data,
-    uint8_t **error)
+    int32_t data)
 {
-  //std::lock_guard<std::mutex> lock(read_mutex_);
+  std::lock_guard<std::mutex> lock(read_mutex_);
 
   int32_t dxl_comm_result = COMM_RX_FAIL;
   uint8_t dxl_error = 0;
@@ -112,13 +111,13 @@ bool read_motors(
       id,
       address,
       data,
-      &error);
+      &dxl_error);
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
     return false;
   }
-  else if (error != 0)
+  else if (dxl_error != 0)
   {
     return false;
   }
@@ -174,29 +173,29 @@ bool DynamixelSDKWrapper::read_register(
   return false;
 }
 
-bool write_motors(
+bool DynamixelSDKWrapper::write_motors(
     uint8_t id,
     uint16_t address,
     uint16_t lenght,
-    int32_t data,
-    uint8_t **error)
+    int32_t data)
 {
-  //std::lock_guard<std::mutex> lock(write_mutex_);
+  std::lock_guard<std::mutex> lock(write_mutex_);
 
   int32_t dxl_comm_result = COMM_TX_FAIL;
+  uint8_t dxl_error = 0;
 
   dxl_comm_result = packetHandler_->write4ByteTxRx(
       portHandler_,
       id,
       address,
       data,
-      &error);
+      &dxl_error);
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
     return false;
   }
-  else if (error != 0)
+  else if (dxl_error != 0)
   {
     return false;
   }

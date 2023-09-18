@@ -243,7 +243,6 @@ void TurtleBot3::parameter_event_callback()
 
       if (changed_parameter.name == "motors.profile_acceleration")
       {
-        uint8_t error = 0;
         motors_.profile_acceleration =
             rclcpp::Parameter::from_parameter_msg(changed_parameter).as_double();
 
@@ -263,10 +262,10 @@ void TurtleBot3::parameter_event_callback()
         uint16_t length = extern_control_table.profile_acceleration.length;
 
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(0, address, length, data.dword[0], &error);
+        dxl_sdk_wrapper_->write_motors(0, address, length, data.dword[0]);
         
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(1, address, length, data.dword[1], &error);
+        dxl_sdk_wrapper_->write_motors(1, address, length, data.dword[1]);
 
       }
     }
@@ -282,8 +281,7 @@ void TurtleBot3::cmd_vel_callback()
       "cmd_vel",
       qos,
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) -> void
-      {
-        uint8_t error = 0;
+      
 
         union Data
         {
@@ -305,10 +303,10 @@ void TurtleBot3::cmd_vel_callback()
         uint16_t addr_length = 4;
 
         // Velocidad motor izquierdo
-        dxl_sdk_wrapper_->write_motors(0, start_addr, addr_length, 2 * data.dword[0], &error);
+        dxl_sdk_wrapper_->write_motors(0, start_addr, addr_length, 2 * data.dword[0]);
         
         // Velocidad motor izquierdo
-        dxl_sdk_wrapper_->write_motors(1, start_addr, addr_length, 2 * data.dword[5], &error);
+        dxl_sdk_wrapper_->write_motors(1, start_addr, addr_length, 2 * data.dword[5]);
 
       });
 }

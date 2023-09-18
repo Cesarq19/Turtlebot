@@ -40,12 +40,11 @@ void JointState::publish(
   std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper)
 {
   auto msg = std::make_unique<sensor_msgs::msg::JointState>();
-  uint8_t error = 0;
-  dxl_sdk_wrapper->read_motors(0, extern_control_table.present_position.addr, extern_control_table.present_position.length, present_position_left, &error);
-  dxl_sdk_wrapper->read_motors(1, extern_control_table.present_position.addr, extern_control_table.present_position.length, present_position_right, &error);
+  dxl_sdk_wrapper->read_motors(0, extern_control_table.present_position.addr, extern_control_table.present_position.length, present_position_left);
+  dxl_sdk_wrapper->read_motors(1, extern_control_table.present_position.addr, extern_control_table.present_position.length, present_position_right);
 
-  dxl_sdk_wrapper->read_motors(0, extern_control_table.present_velocity.addr, extern_control_table.present_velocity.length, present_velocity_left, &error);
-  dxl_sdk_wrapper->read_motors(1, extern_control_table.present_velocity.addr, extern_control_table.present_velocity.length, present_velocity_right, &error);
+  dxl_sdk_wrapper->read_motors(0, extern_control_table.present_velocity.addr, extern_control_table.present_velocity.length, present_velocity_left);
+  dxl_sdk_wrapper->read_motors(1, extern_control_table.present_velocity.addr, extern_control_table.present_velocity.length, present_velocity_right);
 
   static std::array<int32_t, JOINT_NUM> last_diff_position, last_position;
 

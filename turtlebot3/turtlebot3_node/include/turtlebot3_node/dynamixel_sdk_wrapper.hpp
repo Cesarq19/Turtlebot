@@ -101,26 +101,6 @@ namespace robotis
 
       bool is_connected_to_device();
 
-      bool write_motors(
-          uint8_t id,
-          uint16_t address,
-          uint16_t length,
-          int32_t data,
-          uint8_t *error);
-
-      bool read_motors(
-          uint8_t id,
-          uint16_t address,
-          uint16_t length,
-          int32_t data,
-          uint8_t *error);
-
-      std::mutex sdk_mutex_;
-      std::mutex read_data_mutex_;
-      std::mutex write_data_mutex_;
-
-      
-
     private:
       bool init_dynamixel_sdk_handlers();
 
@@ -137,6 +117,22 @@ namespace robotis
           uint16_t length,
           uint8_t *data,
           const char **log = NULL);
+
+      bool write_motors(
+          uint8_t id,
+          uint16_t address,
+          uint16_t length,
+          int32_t data);
+
+      bool read_motors(
+          uint8_t id,
+          uint16_t address,
+          uint16_t length,
+          int32_t data);
+
+      std::mutex sdk_mutex_;
+      std::mutex read_data_mutex_;
+      std::mutex write_data_mutex_;
 
       Device device_;
 
