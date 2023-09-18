@@ -95,7 +95,7 @@ bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
   return true;
 }
 
-bool DynamixelSDKWrapper::read_motors(
+bool read_motors(
     uint8_t id,
     uint16_t address,
     uint16_t length,
@@ -174,7 +174,7 @@ bool DynamixelSDKWrapper::read_register(
   return false;
 }
 
-bool DynamixelSDKWrapper::write_motors(
+bool write_motors(
     uint8_t id,
     uint16_t address,
     uint16_t lenght,
