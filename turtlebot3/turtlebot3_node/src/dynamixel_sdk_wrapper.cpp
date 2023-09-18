@@ -112,7 +112,7 @@ bool DynamixelSDKWrapper::read_motors(
       id,
       address,
       data,
-      &dxl_error);
+      &error);
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
