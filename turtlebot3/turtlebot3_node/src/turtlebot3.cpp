@@ -281,7 +281,7 @@ void TurtleBot3::cmd_vel_callback()
       "cmd_vel",
       qos,
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) -> void
-      
+      {
 
         union Data
         {
