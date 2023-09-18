@@ -40,13 +40,6 @@ DynamixelSDKWrapper::~DynamixelSDKWrapper()
   portHandler_->closePort();
 }
 
-bool DynamixelSDKWrapper::is_connected_to_device()
-{
-  uint8_t data[2];
-  bool connected_left = this->read_register(0, );
-  return this->read_register(device_.id, 0, 2, &data[0]);
-}
-
 void DynamixelSDKWrapper::init_read_memory(const uint16_t &start_addr, const uint16_t &length)
 {
   read_memory_.start_addr = start_addr;
@@ -74,6 +67,19 @@ void DynamixelSDKWrapper::read_data_set()
     std::copy(read_data_buffer_, read_data_buffer_ + READ_DATA_SIZE, read_data_);
     LOG_DEBUG("DynamixelSDKWrapper", "Succeeded to read");
   }
+}
+bool DynamixelSDKWrapper::is_connected_to_device()
+{
+  int32_t dxl_comm_result = COMM_RX_FAIL;
+  uint8_t dxl_error = 0;
+
+  dxl_comm_result = packetHandler_->readTxRx(
+      portHandler_,
+      id,
+      address,
+      length,
+      data_basket,
+      &dxl_error);
 }
 
 bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
@@ -103,6 +109,50 @@ bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
   }
 
   return true;
+}
+
+bool DynamixelSDKWrapper::read_motors(
+    uint8_t id,
+    uint16_t address,
+    uint16_t length,
+    uint32_t data,
+    const char **log = NULL)
+{
+  std::lock_guard<std::mutex> lock(sdk_mutex_);
+
+  int32_t dxl_comm_result = COMM_RX_FAIL;
+  uint8_t dxl_error = 0;
+
+  dxl_comm_result = packetHandler_->read4ByteTxRx(
+      portHandler_,
+      id,
+      address,
+      length,
+      data,
+      &dxl_error);
+
+  if (dxl_comm_result != COMM_SUCCESS)
+  {
+    if (log != NULL)
+    {
+      *log = packetHandler_->getTxRxResult(dxl_comm_result);
+    }
+    return false;
+  }
+  else if (dxl_error != 0)
+  {
+    if (log != NULL)
+    {
+      *log = packetHandler_->getRxPacketError(dxl_error);
+    }
+    return false;
+  }
+  else
+  {
+    return true;
+  }
+
+  return false;
 }
 
 bool DynamixelSDKWrapper::read_register(
@@ -150,12 +200,11 @@ bool DynamixelSDKWrapper::read_register(
 }
 
 bool DynamixelSDKWrapper::write_motors(
-  uint8_t id,
-  uint16_t address,
-  uint16_t lenght,
-  uint32_t data,
-  const char **log = NULL
-)
+    uint8_t id,
+    uint16_t address,
+    uint16_t lenght,
+    uint32_t data,
+    const char **log = NULL)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
@@ -163,13 +212,12 @@ bool DynamixelSDKWrapper::write_motors(
   uint8_t dxl_error = 0;
 
   dxl_comm_result = packetHandler_->write4ByteTxRx(
-    portHandler_,
-    id,
-    address,
-    lenght,
-    data,
-    &dxl_error
-  );
+      portHandler_,
+      id,
+      address,
+      lenght,
+      data,
+      &dxl_error);
 
   if (dxl_comm_result != COMM_SUCCESS)
   {

@@ -29,12 +29,10 @@ TurtleBot3::TurtleBot3(const std::string &usb_port)
   node_handle_ = std::shared_ptr<::rclcpp::Node>(this, [](::rclcpp::Node *) {});
 
   init_dynamixel_sdk_wrapper(usb_port);
-  check_device_status();
 
   add_motors();
   add_wheels();
   add_sensors();
-  add_devices();
 
   run();
 }
@@ -70,8 +68,6 @@ void TurtleBot3::check_device_status()
 {
   if (dxl_sdk_wrapper_->is_connected_to_device())
   {
-    std::string sdk_msg;
-
     RCLCPP_INFO(this->get_logger(), "Start Calibration of Gyro");
     rclcpp::sleep_for(std::chrono::seconds(5));
     RCLCPP_INFO(this->get_logger(), "Calibration End");
@@ -166,11 +162,6 @@ void TurtleBot3::add_sensors()
       is_connected_sonar,
       0);
 
-  // sensors_.push_back(
-  // new sensors::BatteryState(
-  // node_handle_,
-  //"battery_state"));
-
   sensors_.push_back(
       new sensors::Imu(
           node_handle_,
@@ -178,29 +169,8 @@ void TurtleBot3::add_sensors()
           "magnetic_field",
           "imu_link"));
 
-  // sensors_.push_back(
-  // new sensors::SensorState(
-  // node_handle_,
-  //"sensor_state",
-  // is_connected_bumper_1,
-  // is_connected_bumper_2,
-  // is_connected_illumination,
-  // is_connected_ir,
-  // is_connected_sonar));
-
   sensors_.push_back(new sensors::JointState(node_handle_, "joint_states", "base_link"));
 }
-
-// void TurtleBot3::add_devices()
-//{
-// RCLCPP_INFO(this->get_logger(), "Add Devices");
-// devices_["motor_power"] =
-// new devices::MotorPower(node_handle_, dxl_sdk_wrapper_, "motor_power");
-// devices_["reset"] =
-// new devices::Reset(node_handle_, dxl_sdk_wrapper_, "reset");
-// devices_["sound"] =
-// new devices::Sound(node_handle_, dxl_sdk_wrapper_, "sound");
-//}
 
 void TurtleBot3::run()
 {
@@ -244,9 +214,6 @@ void TurtleBot3::heartbeat_timer(const std::chrono::milliseconds timeout)
         // extern_control_table.heartbeat.length,
         //&count,
         //&msg);
-
-        RCLCPP_DEBUG(this->get_logger(), "hearbeat count : %d, msg : %s", count, msg.c_str());
-
         count++;
       });
 }
@@ -298,9 +265,10 @@ void TurtleBot3::parameter_event_callback()
         uint16_t length = extern_control_table.profile_acceleration.length;
 
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(0, address, length, 2 * data.dword[0], &sdk_msg);
+        dxl_sdk_wrapper_->write_motors(0, address, length, data.dword[0], &sdk_msg);
+        
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(1, address, length, 2 * data.dword[1], &sdk_msg);
+        dxl_sdk_wrapper_->write_motors(1, address, length, data.dword[1], &sdk_msg);
 
         RCLCPP_INFO(
             this->get_logger(),
@@ -345,6 +313,7 @@ void TurtleBot3::cmd_vel_callback()
 
         // Velocidad motor izquierdo
         dxl_sdk_wrapper_->write_motors(0, start_addr, addr_length, 2 * data.dword[0], &sdk_msg);
+        
         // Velocidad motor izquierdo
         dxl_sdk_wrapper_->write_motors(1, start_addr, addr_length, 2 * data.dword[5], &sdk_msg);
 

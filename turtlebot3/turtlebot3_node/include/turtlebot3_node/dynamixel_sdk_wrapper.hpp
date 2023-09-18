@@ -97,15 +97,6 @@ public:
     std::string * msg,
     uint8_t mode);
 
-  bool set_data_to_device_2(
-    uint8_t id,
-    const uint16_t & addr,
-    const uint16_t & length,
-    uint8_t * get_data,
-    std::string * msg);
-
-  //void init_read_memory(const uint16_t & start_addr, const uint16_t & length);
-
   void read_data_set();
 
   bool is_connected_to_device();
@@ -134,6 +125,13 @@ private:
     uint32_t data,
     const char ** log = NULL
   );
+
+  bool read_motors(
+    uint8_t id,
+    uint16_t address,
+    uint16_t length,
+    uint32_t data,
+    const char **log = NULL);
 
   dynamixel::PortHandler * portHandler_;
   dynamixel::PacketHandler * packetHandler_;
