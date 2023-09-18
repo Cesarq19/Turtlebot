@@ -45,7 +45,7 @@ void Sound::command(const void * request, void * response)
   turtlebot3_msgs::srv::Sound::Response * res = (turtlebot3_msgs::srv::Sound::Response *)response;
 
   res->success = true;
-
+}
 void Sound::request(
   rclcpp::Client<turtlebot3_msgs::srv::Sound>::SharedPtr client,
   turtlebot3_msgs::srv::Sound::Request req)
