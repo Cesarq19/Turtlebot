@@ -49,7 +49,7 @@ public:
   typedef struct
   {
     std::string usb_port;
-    uint8_t id,
+    uint8_t id;
     int baud_rate;
     float protocol_version;
   } Device;

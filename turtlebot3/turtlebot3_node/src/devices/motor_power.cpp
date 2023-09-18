@@ -44,11 +44,7 @@ void MotorPower::command(const void * request, void * response)
   std_srvs::srv::SetBool::Request req = *(std_srvs::srv::SetBool::Request *)request;
   std_srvs::srv::SetBool::Response * res = (std_srvs::srv::SetBool::Response *)response;
 
-  res->success = dxl_sdk_wrapper_->set_data_to_device(
-    extern_control_table.torque_enable.addr,
-    extern_control_table.torque_enable.length,
-    reinterpret_cast<uint8_t *>(&req.data),
-    &res->message);
+  res->success = true;
 }
 
 void MotorPower::request(
