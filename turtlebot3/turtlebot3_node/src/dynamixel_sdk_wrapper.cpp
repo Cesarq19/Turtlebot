@@ -102,7 +102,7 @@ bool read_motors(
     int32_t data,
     uint8_t **error)
 {
-  std::lock_guard<std::mutex> lock(sdk_mutex_);
+  std::lock_guard<std::mutex> lock(read_mutex_);
 
   int32_t dxl_comm_result = COMM_RX_FAIL;
   uint8_t dxl_error = 0;
@@ -181,7 +181,7 @@ bool write_motors(
     int32_t data,
     uint8_t **error)
 {
-  std::lock_guard<std::mutex> lock(sdk_mutex_);
+  std::lock_guard<std::mutex> lock(write_mutex_);
 
   int32_t dxl_comm_result = COMM_TX_FAIL;
 
