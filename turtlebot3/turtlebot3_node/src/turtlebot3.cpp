@@ -244,8 +244,7 @@ void TurtleBot3::parameter_event_callback()
 
       if (changed_parameter.name == "motors.profile_acceleration")
       {
-        std::string sdk_msg;
-
+        uint8_t error = 0;
         motors_.profile_acceleration =
             rclcpp::Parameter::from_parameter_msg(changed_parameter).as_double();
 
@@ -265,16 +264,11 @@ void TurtleBot3::parameter_event_callback()
         uint16_t length = extern_control_table.profile_acceleration.length;
 
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(0, address, length, data.dword[0], &sdk_msg);
+        dxl_sdk_wrapper_->write_motors(0, address, length, data.dword[0], &error);
         
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(1, address, length, data.dword[1], &sdk_msg);
+        dxl_sdk_wrapper_->write_motors(1, address, length, data.dword[1], &error);
 
-        RCLCPP_INFO(
-            this->get_logger(),
-            "changed parameter value : %f [rev/min2] sdk_msg : %s",
-            motors_.profile_acceleration,
-            sdk_msg.c_str());
       }
     }
   };
@@ -290,7 +284,7 @@ void TurtleBot3::cmd_vel_callback()
       qos,
       [this](const geometry_msgs::msg::Twist::SharedPtr msg) -> void
       {
-        std::string sdk_msg;
+        uint8_t error = 0;
 
         union Data
         {
@@ -312,13 +306,10 @@ void TurtleBot3::cmd_vel_callback()
         uint16_t addr_length = 4;
 
         // Velocidad motor izquierdo
-        dxl_sdk_wrapper_->write_motors(0, start_addr, addr_length, 2 * data.dword[0], &sdk_msg);
+        dxl_sdk_wrapper_->write_motors(0, start_addr, addr_length, 2 * data.dword[0], &error);
         
         // Velocidad motor izquierdo
-        dxl_sdk_wrapper_->write_motors(1, start_addr, addr_length, 2 * data.dword[5], &sdk_msg);
+        dxl_sdk_wrapper_->write_motors(1, start_addr, addr_length, 2 * data.dword[5], &error);
 
-        RCLCPP_DEBUG(
-            this->get_logger(),
-            "lin_vel: %f ang_vel: %f msg : %s", msg->linear.x, msg->angular.z, sdk_msg.c_str());
       });
 }

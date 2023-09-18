@@ -100,7 +100,7 @@ bool DynamixelSDKWrapper::read_motors(
     uint16_t address,
     uint16_t length,
     uint32_t data,
-    std::string **msg)
+    uint8_t *error)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
@@ -116,18 +116,12 @@ bool DynamixelSDKWrapper::read_motors(
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
-    if (log != NULL)
-    {
-      *log = packetHandler_->getTxRxResult(dxl_comm_result);
-    }
+    RCLCPP_INFO(this->get_logger(), "%s", packetHandler_->getTxRxResult(dxl_comm_result));
     return false;
   }
   else if (dxl_error != 0)
   {
-    if (log != NULL)
-    {
-      *log = packetHandler_->getRxPacketError(dxl_error);
-    }
+    RCLCPP_INFO(this->get_logger(), "%s",  packetHandler_->getRxPacketError(error));
     return false;
   }
   else
@@ -187,34 +181,27 @@ bool DynamixelSDKWrapper::write_motors(
     uint16_t address,
     uint16_t lenght,
     uint32_t data,
-    std::string **log)
+    uint8_t *error)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
   int32_t dxl_comm_result = COMM_TX_FAIL;
-  uint8_t dxl_error = 0;
 
   dxl_comm_result = packetHandler_->write4ByteTxRx(
       portHandler_,
       id,
       address,
       data,
-      &dxl_error);
+      &error);
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
-    if (log != NULL)
-    {
-      *log = packetHandler_->getTxRxResult(dxl_comm_result);
-    }
+    RCLCPP_INFO(this->get_logger(), "%s", packetHandler_->getTxRxResult(dxl_comm_result));
     return false;
   }
   else if (dxl_error != 0)
   {
-    if (log != NULL)
-    {
-      *log = packetHandler_->getRxPacketError(dxl_error);
-    }
+    RCLCPP_INFO(this->get_logger(), "%s",  packetHandler_->getRxPacketError(error));
     return false;
   }
   else
