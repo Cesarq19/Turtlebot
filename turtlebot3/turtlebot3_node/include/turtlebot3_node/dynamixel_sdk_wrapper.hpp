@@ -121,17 +121,16 @@ private:
   bool write_motors(
     uint8_t id,
     uint16_t address,
-    uint16_t length,
+    uint16_t lenght,
     uint32_t data,
-    const char ** log = NULL
-  );
+    std::string ** log = NULL);
 
   bool read_motors(
     uint8_t id,
     uint16_t address,
-    uint16_t length,
+    uint16_t lenght,
     uint32_t data,
-    const char **log = NULL);
+    std::string ** log = NULL);
 
   dynamixel::PortHandler * portHandler_;
   dynamixel::PacketHandler * packetHandler_;
