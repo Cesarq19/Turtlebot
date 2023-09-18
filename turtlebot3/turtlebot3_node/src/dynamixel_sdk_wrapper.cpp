@@ -116,12 +116,10 @@ bool DynamixelSDKWrapper::read_motors(
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
-    RCLCPP_INFO(this->get_logger(), "%s", packetHandler_->getTxRxResult(dxl_comm_result));
     return false;
   }
   else if (error != 0)
   {
-    RCLCPP_INFO(this->get_logger(), "%s",  packetHandler_->getRxPacketError(error));
     return false;
   }
   else
@@ -196,12 +194,10 @@ bool DynamixelSDKWrapper::write_motors(
 
   if (dxl_comm_result != COMM_SUCCESS)
   {
-    RCLCPP_INFO(this->get_logger(), "%s", packetHandler_->getTxRxResult(dxl_comm_result));
     return false;
   }
-  else if (dxl_error != 0)
+  else if (error != 0)
   {
-    RCLCPP_INFO(this->get_logger(), "%s",  packetHandler_->getRxPacketError(error));
     return false;
   }
   else
