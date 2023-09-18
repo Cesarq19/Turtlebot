@@ -39,121 +39,124 @@
 
 namespace robotis
 {
-namespace turtlebot3
-{
-
-
-class DynamixelSDKWrapper
-{
-public:
-  typedef struct
+  namespace turtlebot3
   {
-    std::string usb_port;
-    uint8_t id;
-    int baud_rate;
-    float protocol_version;
-  } Device;
 
-  explicit DynamixelSDKWrapper(const Device & device);
-  virtual ~DynamixelSDKWrapper();
+    class DynamixelSDKWrapper
+    {
+    public:
+      typedef struct
+      {
+        std::string usb_port;
+        uint8_t id;
+        int baud_rate;
+        float protocol_version;
+      } Device;
 
-  template<typename DataByteT>
-  DataByteT get_data_from_device(const uint16_t & addr, const uint16_t & length)
-  {
-    DataByteT data = 0;
-    uint8_t * p_data = reinterpret_cast<uint8_t *>(&data);
-    uint16_t index = addr - read_memory_.start_addr;
+      explicit DynamixelSDKWrapper(const Device &device);
+      virtual ~DynamixelSDKWrapper();
 
-    std::lock_guard<std::mutex> lock(read_data_mutex_);
-    switch (length) {
-      case 1:
-        p_data[0] = read_memory_.data[index + 0];
-        break;
+      template <typename DataByteT>
+      DataByteT get_data_from_device(const uint16_t &addr, const uint16_t &length)
+      {
+        DataByteT data = 0;
+        uint8_t *p_data = reinterpret_cast<uint8_t *>(&data);
+        uint16_t index = addr - read_memory_.start_addr;
 
-      case 2:
-        p_data[0] = read_memory_.data[index + 0];
-        p_data[1] = read_memory_.data[index + 1];
-        break;
+        std::lock_guard<std::mutex> lock(read_data_mutex_);
+        switch (length)
+        {
+        case 1:
+          p_data[0] = read_memory_.data[index + 0];
+          break;
 
-      case 4:
-        p_data[0] = read_memory_.data[index + 0];
-        p_data[1] = read_memory_.data[index + 1];
-        p_data[2] = read_memory_.data[index + 2];
-        p_data[3] = read_memory_.data[index + 3];
-        break;
+        case 2:
+          p_data[0] = read_memory_.data[index + 0];
+          p_data[1] = read_memory_.data[index + 1];
+          break;
 
-      default:
-        p_data[0] = read_memory_.data[index + 0];
-        break;
-    }
+        case 4:
+          p_data[0] = read_memory_.data[index + 0];
+          p_data[1] = read_memory_.data[index + 1];
+          p_data[2] = read_memory_.data[index + 2];
+          p_data[3] = read_memory_.data[index + 3];
+          break;
 
-    return data;
-  }
+        default:
+          p_data[0] = read_memory_.data[index + 0];
+          break;
+        }
 
-  bool set_data_to_device(
-    const uint16_t & addr,
-    const uint16_t & length,
-    uint8_t * get_data,
-    std::string * msg,
-    uint8_t mode);
+        return data;
+      }
 
-  void read_data_set();
+      bool set_data_to_device(
+          const uint16_t &addr,
+          const uint16_t &length,
+          uint8_t *get_data,
+          std::string *msg,
+          uint8_t mode);
 
-  bool is_connected_to_device();
+      void read_data_set();
 
-  bool write_motors(
-    uint8_t id,
-    uint16_t address,
-    uint16_t length,
-    int32_t data,
-    uint8_t *error);
+      bool is_connected_to_device();
 
-  bool read_motors(
-    uint8_t id,
-    uint16_t address,
-    uint16_t length,
-    int32_t data,
-    uint8_t *error);
+      bool write_motors(
+          uint8_t id,
+          uint16_t address,
+          uint16_t length,
+          int32_t data,
+          uint8_t *error);
 
-private:
-  bool init_dynamixel_sdk_handlers();
+      bool read_motors(
+          uint8_t id,
+          uint16_t address,
+          uint16_t length,
+          int32_t data,
+          uint8_t *error);
 
-  bool read_register(
-    uint8_t id,
-    uint16_t address,
-    uint16_t length,
-    uint8_t * data_basket,
-    const char ** log = NULL);
+      std::mutex sdk_mutex_;
+      std::mutex read_data_mutex_;
+      std::mutex write_data_mutex_;
 
-  bool write_register(
-    uint8_t id,
-    uint16_t address,
-    uint16_t length,
-    uint8_t * data,
-    const char ** log = NULL);
+      dynamixel::PortHandler *portHandler_;
+      dynamixel::PacketHandler *packetHandler_;
 
+    private:
+      bool init_dynamixel_sdk_handlers();
 
-  dynamixel::PortHandler * portHandler_;
-  dynamixel::PacketHandler * packetHandler_;
+      bool read_register(
+          uint8_t id,
+          uint16_t address,
+          uint16_t length,
+          uint8_t *data_basket,
+          const char **log = NULL);
 
-  Device device_;
+      bool write_register(
+          uint8_t id,
+          uint16_t address,
+          uint16_t length,
+          uint8_t *data,
+          const char **log = NULL);
 
-  uint8_t read_data_[READ_DATA_SIZE] = {0, };
-  uint8_t read_data_buffer_[READ_DATA_SIZE] = {0, };
+      Device device_;
 
-  typedef struct
-  {
-    uint16_t start_addr;
-    uint16_t length;
-    uint8_t * data;
-  } Memory;
+      uint8_t read_data_[READ_DATA_SIZE] = {
+          0,
+      };
+      uint8_t read_data_buffer_[READ_DATA_SIZE] = {
+          0,
+      };
 
-  Memory read_memory_;
+      typedef struct
+      {
+        uint16_t start_addr;
+        uint16_t length;
+        uint8_t *data;
+      } Memory;
 
-  std::mutex sdk_mutex_;
-  std::mutex read_data_mutex_;
-  std::mutex write_data_mutex_;
-};
-}  // namespace turtlebot3
-}  // namespace robotis
-#endif  // TURTLEBOT3_NODE__DYNAMIXEL_SDK_WRAPPER_HPP_
+      Memory read_memory_;
+    };
+  } // namespace turtlebot3
+} // namespace robotis
+#endif // TURTLEBOT3_NODE__DYNAMIXEL_SDK_WRAPPER_HPP_
