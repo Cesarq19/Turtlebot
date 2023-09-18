@@ -198,7 +198,6 @@ bool DynamixelSDKWrapper::write_motors(
       portHandler_,
       id,
       address,
-      lenght,
       data,
       &dxl_error);
 
