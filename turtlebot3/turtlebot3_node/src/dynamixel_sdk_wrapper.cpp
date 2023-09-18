@@ -40,13 +40,6 @@ DynamixelSDKWrapper::~DynamixelSDKWrapper()
   portHandler_->closePort();
 }
 
-void DynamixelSDKWrapper::init_read_memory(const uint16_t &start_addr, const uint16_t &length)
-{
-  read_memory_.start_addr = start_addr;
-  read_memory_.length = length;
-  read_memory_.data = &read_data_[0];
-}
-
 void DynamixelSDKWrapper::read_data_set()
 {
   const char *log = NULL;
@@ -70,16 +63,7 @@ void DynamixelSDKWrapper::read_data_set()
 }
 bool DynamixelSDKWrapper::is_connected_to_device()
 {
-  int32_t dxl_comm_result = COMM_RX_FAIL;
-  uint8_t dxl_error = 0;
-
-  dxl_comm_result = packetHandler_->readTxRx(
-      portHandler_,
-      id,
-      address,
-      length,
-      data_basket,
-      &dxl_error);
+  return true;
 }
 
 bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
@@ -127,7 +111,6 @@ bool DynamixelSDKWrapper::read_motors(
       portHandler_,
       id,
       address,
-      length,
       data,
       &dxl_error);
 
