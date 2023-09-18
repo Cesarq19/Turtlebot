@@ -27,7 +27,7 @@ from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    port = LaunchConfiguration('port', default='/dev/ttyUSB0')
+    port = LaunchConfiguration('port', default='/dev/ttyUSB1')
 
     frame_id = LaunchConfiguration('frame_id', default='laser')
 
