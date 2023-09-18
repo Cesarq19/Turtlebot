@@ -101,6 +101,20 @@ public:
 
   bool is_connected_to_device();
 
+  bool write_motors(
+    uint8_t id,
+    uint16_t address,
+    uint16_t length,
+    int32_t data,
+    uint8_t *error);
+
+  bool read_motors(
+    uint8_t id,
+    uint16_t address,
+    uint16_t length,
+    int32_t data,
+    uint8_t *error);
+
 private:
   bool init_dynamixel_sdk_handlers();
 
@@ -118,19 +132,6 @@ private:
     uint8_t * data,
     const char ** log = NULL);
 
-  bool write_motors(
-    uint8_t id,
-    uint16_t address,
-    uint16_t length,
-    uint32_t data,
-    uint8_t *error);
-
-  bool read_motors(
-    uint8_t id,
-    uint16_t address,
-    uint16_t length,
-    uint32_t data,
-    uint8_t *error);
 
   dynamixel::PortHandler * portHandler_;
   dynamixel::PacketHandler * packetHandler_;

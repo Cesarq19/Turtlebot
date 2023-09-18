@@ -83,7 +83,7 @@ void TurtleBot3::check_device_status()
 
   int8_t device_status = dxl_sdk_wrapper_->get_data_from_device<int8_t>(
       extern_control_table.hardware_error_status.addr,
-      extern_control_table.device_status.length);
+      extern_control_table.hardware_error_status.length);
 
   switch (device_status)
   {
@@ -191,7 +191,7 @@ void TurtleBot3::publish_timer(const std::chrono::milliseconds timeout)
       {
         rclcpp::Time now = this->now();
 
-        dxl_sdk_wrapper_->read_data_set();
+        //dxl_sdk_wrapper_->read_data_set();
 
         for (const auto &sensor : sensors_)
         {
@@ -207,7 +207,6 @@ void TurtleBot3::heartbeat_timer(const std::chrono::milliseconds timeout)
       [this]() -> void
       {
         static uint8_t count = 0;
-        std::string msg;
 
         // dxl_sdk_wrapper_->set_data_to_device(
         // extern_control_table.heartbeat.addr,

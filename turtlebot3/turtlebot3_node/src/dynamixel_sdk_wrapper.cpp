@@ -99,7 +99,7 @@ bool DynamixelSDKWrapper::read_motors(
     uint8_t id,
     uint16_t address,
     uint16_t length,
-    uint32_t data,
+    int32_t data,
     uint8_t *error)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
@@ -119,7 +119,7 @@ bool DynamixelSDKWrapper::read_motors(
     RCLCPP_INFO(this->get_logger(), "%s", packetHandler_->getTxRxResult(dxl_comm_result));
     return false;
   }
-  else if (dxl_error != 0)
+  else if (error != 0)
   {
     RCLCPP_INFO(this->get_logger(), "%s",  packetHandler_->getRxPacketError(error));
     return false;
@@ -180,7 +180,7 @@ bool DynamixelSDKWrapper::write_motors(
     uint8_t id,
     uint16_t address,
     uint16_t lenght,
-    uint32_t data,
+    int32_t data,
     uint8_t *error)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
