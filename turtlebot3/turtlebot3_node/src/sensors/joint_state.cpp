@@ -49,10 +49,10 @@ void JointState::publish(
   static std::array<int32_t, JOINT_NUM> last_diff_position, last_position;
 
   std::array<int32_t, JOINT_NUM> position =
-  {present_position_left, present_position_right};
+  {*present_position_left, *present_position_right};
 
   std::array<int32_t, JOINT_NUM> velocity =
-  {present_velocity_left, present_velocity_right};
+  {*present_velocity_left, *present_velocity_right};
 
   // std::array<int32_t, JOINT_NUM> current =
   //   {dxl_sdk_wrapper->get_data_from_device<int32_t>(
