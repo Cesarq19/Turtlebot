@@ -121,13 +121,13 @@ namespace robotis
           uint8_t id,
           uint16_t address,
           uint16_t length,
-          int32_t *data);
+          uint32_t *data);
 
       bool read_motors(
           uint8_t id,
           uint16_t address,
           uint16_t length,
-          int32_t *data);
+          uint32_t *data);
 
       std::mutex sdk_mutex_;
       std::mutex read_data_mutex_;
