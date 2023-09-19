@@ -123,9 +123,9 @@ bool DynamixelSDKWrapper::read_motors(
     uint8_t id,
     uint16_t address,
     uint16_t length,
-    uint32_t * data)
+    uint32_t *data)
 {
-  std::lock_guard<std::mutex> lock(sdk_mutex_);
+  std::lock_guard<std::mutex> lock(read_data_mutex_);
 
   int32_t dxl_comm_result = COMM_RX_FAIL;
   uint8_t dxl_error = 0;
