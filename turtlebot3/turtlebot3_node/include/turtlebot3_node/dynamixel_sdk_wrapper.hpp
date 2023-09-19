@@ -90,12 +90,11 @@ namespace robotis
         return data;
       }
 
-      bool set_data_to_device(
+      bool set_data_to_motors(
+          uint8_t id,
           const uint16_t &addr,
           const uint16_t &length,
-          uint8_t *get_data,
-          std::string *msg,
-          uint8_t mode);
+          uint32_t *get_data);
 
       void read_data_set();
 
@@ -122,13 +121,13 @@ namespace robotis
           uint8_t id,
           uint16_t address,
           uint16_t length,
-          int32_t data);
+          int32_t *data);
 
       bool read_motors(
           uint8_t id,
           uint16_t address,
           uint16_t length,
-          int32_t data);
+          int32_t *data);
 
       std::mutex sdk_mutex_;
       std::mutex read_data_mutex_;

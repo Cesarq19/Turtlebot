@@ -262,10 +262,10 @@ void TurtleBot3::parameter_event_callback()
         uint16_t length = extern_control_table.profile_acceleration.length;
 
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(0, address, length, data.dword[0]);
+        dxl_sdk_wrapper_->set_data_to_motors(0, address, length, data.dword[0]);
         
         // Aceleracion motor izquierdo
-        dxl_sdk_wrapper_->write_motors(1, address, length, data.dword[1]);
+        dxl_sdk_wrapper_->set_data_to_motors(1, address, length, data.dword[1]);
 
       }
     }
@@ -303,10 +303,10 @@ void TurtleBot3::cmd_vel_callback()
         uint16_t addr_length = 4;
 
         // Velocidad motor izquierdo
-        dxl_sdk_wrapper_->write_motors(0, start_addr, addr_length, 2 * data.dword[0]);
+        dxl_sdk_wrapper_->set_data_to_motors(0, start_addr, addr_length, 2 * data.dword[0]);
         
         // Velocidad motor izquierdo
-        dxl_sdk_wrapper_->write_motors(1, start_addr, addr_length, 2 * data.dword[5]);
+        dxl_sdk_wrapper_->set_data_to_motors(1, start_addr, addr_length, 2 * data.dword[5]);
 
       });
 }
