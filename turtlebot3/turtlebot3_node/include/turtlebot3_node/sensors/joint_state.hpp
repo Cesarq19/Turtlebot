@@ -53,11 +53,11 @@ public:
 private:
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr pub_;
 
-  uint32_t present_position_right;
-  uint32_t present_position_left;
+  uint32_t *  present_position_right;
+  uint32_t *  present_position_left;
 
-  uint32_t present_velocity_right;
-  uint32_t present_velocity_left;
+  uint32_t *  present_velocity_right;
+  uint32_t * present_velocity_left;
 };
 }  // namespace sensors
 }  // namespace turtlebot3
