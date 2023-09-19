@@ -134,7 +134,7 @@ bool DynamixelSDKWrapper::read_motors(
       portHandler_,
       id,
       address,
-      reinterpret_cast<uint32_t *>(&data),
+      &data,
       &dxl_error);
 
   if (dxl_comm_result != COMM_SUCCESS)
