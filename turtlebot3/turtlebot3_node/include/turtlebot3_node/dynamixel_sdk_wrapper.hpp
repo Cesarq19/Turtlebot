@@ -94,7 +94,7 @@ namespace robotis
           uint8_t id,
           const uint16_t &addr,
           const uint16_t &length,
-          uint32_t *get_data);
+          int32_t *get_data);
 
       void read_data_set();
 
@@ -121,7 +121,7 @@ namespace robotis
           uint8_t id,
           uint16_t address,
           uint16_t length,
-          uint32_t *data);
+          int32_t *data);
 
       bool read_motors(
           uint8_t id,

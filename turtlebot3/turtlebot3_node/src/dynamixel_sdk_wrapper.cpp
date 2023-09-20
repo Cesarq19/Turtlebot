@@ -201,7 +201,7 @@ bool DynamixelSDKWrapper::write_motors(
     uint8_t id,
     uint16_t address,
     uint16_t lenght,
-    uint32_t *data)
+    int32_t *data)
 {
   std::lock_guard<std::mutex> lock(sdk_mutex_);
 
@@ -212,7 +212,7 @@ bool DynamixelSDKWrapper::write_motors(
       portHandler_,
       id,
       address,
-      data,
+      reinterpret_cast<uint32_t *>(&data),
       &dxl_error);
 
   if (dxl_comm_result != COMM_SUCCESS)
