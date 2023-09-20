@@ -70,7 +70,7 @@ bool DynamixelSDKWrapper::set_data_to_motors(
 {
   bool ret = false;
 
-  std::lock_guard<std::mutex> lock(write_data_mutex_);
+  //std::lock_guard<std::mutex> lock(write_data_mutex_);
 
   ret = write_motors(id, addr, lenght, get_data);
 
