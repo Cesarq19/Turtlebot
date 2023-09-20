@@ -123,7 +123,7 @@ bool DynamixelSDKWrapper::read_motors(
     uint8_t id,
     uint16_t address,
     uint16_t length,
-    uint32_t *data)
+    int32_t *data)
 {
   std::lock_guard<std::mutex> lock(read_data_mutex_);
 
@@ -134,7 +134,7 @@ bool DynamixelSDKWrapper::read_motors(
       portHandler_,
       id,
       address,
-      &data,
+      reinterpret_cast<uint32_t *>(&data),
       &dxl_error);
 
   if (dxl_comm_result != COMM_SUCCESS)
