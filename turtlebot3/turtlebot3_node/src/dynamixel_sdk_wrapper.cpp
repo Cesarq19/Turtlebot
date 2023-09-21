@@ -66,7 +66,7 @@ bool DynamixelSDKWrapper::set_data_to_motors(
     uint8_t id,
     const uint16_t &addr,
     const uint16_t &lenght,
-    uint32_t *get_data)
+    int32_t *get_data)
 {
   bool ret = false;
 
