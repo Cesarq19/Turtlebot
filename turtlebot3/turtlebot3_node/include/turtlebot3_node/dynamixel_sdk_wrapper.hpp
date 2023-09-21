@@ -96,6 +96,12 @@ namespace robotis
           const uint16_t &length,
           int32_t *get_data);
 
+      bool read_data_to_motors(
+          uint8_t id,
+          const uint16_t &addr,
+          const uint16_t &length,
+          int32_t *get_data);
+
       void read_data_set();
 
       bool is_connected_to_device();

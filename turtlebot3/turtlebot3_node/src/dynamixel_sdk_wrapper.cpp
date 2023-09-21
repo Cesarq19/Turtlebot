@@ -85,6 +85,31 @@ bool DynamixelSDKWrapper::set_data_to_motors(
 
   return ret;
 }
+
+bool DynamixelSDKWrapper::read_data_to_motors(
+  uint8_t id,
+  const uint16_t &addr,
+  const uint16_t &length,
+  int32_t *get_data
+)
+{
+  bool ret = false;
+
+  std::lock_guard<std::mutex> lock(write_data_mutex_);
+
+  ret = read_motors(id, addr, length, get_data);
+  if (ret == true)
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+
+  return ret;
+}
+
 bool DynamixelSDKWrapper::is_connected_to_device()
 {
   return true;
