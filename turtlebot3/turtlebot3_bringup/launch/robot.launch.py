@@ -31,7 +31,7 @@ from launch_ros.actions import Node
 def generate_launch_description():
     TURTLEBOT3_MODEL = os.environ['TURTLEBOT3_MODEL']
     LDS_MODEL = os.environ['LDS_MODEL']
-    LDS_LAUNCH_FILE = '/ydlidar_launch.py'
+    LDS_LAUNCH_FILE = '/hlds_laser.launch.py'
     IMU_LAUNCH_FILE = '/wt61c.launch.py'
 
     usb_port = LaunchConfiguration('usb_port', default='/dev/ttyUSB0')
@@ -44,9 +44,14 @@ def generate_launch_description():
             TURTLEBOT3_MODEL + '.yaml'))
 
     # Inicializar el lidar
+    #lidar_pkg_dir = LaunchConfiguration(
+    #    'lidar_pkg_dir',
+    #    default=os.path.join(get_package_share_directory('ydlidar_ros2_driver'), 'launch')
+    #);
+
     lidar_pkg_dir = LaunchConfiguration(
         'lidar_pkg_dir',
-        default=os.path.join(get_package_share_directory('ydlidar_ros2_driver'), 'launch')
+        default=os.path.join(get_package_share_directory('hls_lfcd_lds_driver'), 'launch')
     );
 
     # Inicializar el IMU
