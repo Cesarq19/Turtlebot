@@ -42,8 +42,8 @@ int main(int argc, char *argv[]) {
 
   CYdLidar laser;
   std::string str_optvalue;
-  node->declare_parameter<std::string>("port", "/dev/ttyUSB1");
-  node->get_parameter_or<std::string>("port", str_optvalue, "/dev/ttyUSB1");
+  node->declare_parameter<std::string>("port", "/dev/ydlidar");
+  node->get_parameter_or<std::string>("port", str_optvalue, "/dev/ydlidar");
   ///lidar port
   laser.setlidaropt(LidarPropSerialPort, str_optvalue.c_str(), str_optvalue.size());
 
