@@ -34,7 +34,7 @@ def generate_launch_description():
     LDS_LAUNCH_FILE = '/hlds_laser.launch.py'
     IMU_LAUNCH_FILE = '/wt61c.launch.py'
 
-    usb_port = LaunchConfiguration('usb_port', default='/dev/ttyUSB0')
+    usb_port = LaunchConfiguration('usb_port', default='/dev/ttyUSB1')
 
     tb3_param_dir = LaunchConfiguration(
         'tb3_param_dir',
