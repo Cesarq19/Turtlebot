@@ -54,8 +54,8 @@ int main(int argc, char *argv[]) {
   laser.setlidaropt(LidarPropIgnoreArray, str_optvalue.c_str(), str_optvalue.size());
 
   std::string frame_id;
-  node->declare_parameter<std::string>("frame_id", "r1/laser_frame");
-  node->get_parameter_or<std::string>("frame_id", frame_id, "r1/laser_frame");
+  node->declare_parameter<std::string>("frame_id", "/laser_frame");
+  node->get_parameter_or<std::string>("frame_id", frame_id, "/laser_frame");
 
   //////////////////////int property/////////////////
   /// lidar baudrate
@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
     RCLCPP_ERROR(node->get_logger(), "%s\n", laser.DescribeError());
   }
   
-  auto laser_pub = node->create_publisher<sensor_msgs::msg::LaserScan>("r1/scan", 100);
+  auto laser_pub = node->create_publisher<sensor_msgs::msg::LaserScan>("/scan", 100);
 
   auto stop_scan_service =
     [&laser](const std::shared_ptr<rmw_request_id_t> request_header,
