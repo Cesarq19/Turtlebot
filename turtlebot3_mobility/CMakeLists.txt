@@ -27,7 +27,7 @@ find_package(std_srvs REQUIRED)
 include_directories(include)
 
 add_executable(turtlebot3_move src/velocity_cmd_node.cpp)
-ament_target_dependencies(turtlebot3_mobility
+ament_target_dependencies(turtlebot3_move
   dynamixel_sdk
   rclcpp
 )
