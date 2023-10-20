@@ -43,7 +43,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
         {
             uint8_t dxl_error = 0;
 
-            linear_velocity_ = static_cast<int32_t>(msg->linear.x * 100);
+            linear_velocity_ = static_cast<int32_t>(msg->linear.x * 200);
             angular_velocity_ = static_cast<int32_t>(msg->angular.z * 100);
 
             int32_t velocity_left = linear_velocity_ - angular_velocity_;
