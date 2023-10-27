@@ -20,7 +20,7 @@
 #define MOTOR_LEFT_ID 1
 #define MOTOR_RIGHT_ID 0
 #define BAUDRATE 57600             // Default Baudrate of DYNAMIXEL X series
-#define DEVICE_NAME "platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4:1.0-port0" // [Linux]: "/dev/ttyUSB*", [Windows]: "COM*"
+#define DEVICE_NAME "/dev/serial/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4:1.0-port0" // [Linux]: "/dev/ttyUSB*", [Windows]: "COM*"
 
 using namespace dynamixel;
 
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
     dxl_comm_result = portHandler->openPort();
     if (dxl_comm_result == false)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to open the port!");
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to open the port! VERIFICAR ", DEVICE_NAME.c_str());
         return -1;
     }
     else
