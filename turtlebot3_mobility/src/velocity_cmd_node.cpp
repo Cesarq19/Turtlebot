@@ -88,7 +88,7 @@ void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
 
     if (dxl_comm_result != COMM_SUCCESS)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in left motor.");
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in left motor. CORREGIR");
     }
     else
     {
@@ -104,7 +104,7 @@ void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
 
     if (dxl_comm_result != COMM_SUCCESS)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in right motor.");
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in right motor. CORREGIR");
     }
     else
     {
@@ -121,7 +121,7 @@ void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
 
     if (dxl_comm_result != COMM_SUCCESS)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor. CORREGIR");
     }
 
     dxl_comm_result = packetHandler->write1ByteTxRx(
@@ -133,7 +133,7 @@ void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
 
     if (dxl_comm_result != COMM_SUCCESS)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor.");
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in right motor. CORREGIR");
     }
 }
 
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
     dxl_comm_result = portHandler->openPort();
     if (dxl_comm_result == false)
     {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to open the port! VERIFICAR ", DEVICE_NAME.c_str());
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to open the port!");
         return -1;
     }
     else
