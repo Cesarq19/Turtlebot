@@ -2,7 +2,6 @@
 #include <memory>
 #include <string>
 
-
 #include "turtlebot3_mobility/velocity_cmd_node.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include "rclcpp/rclcpp.hpp"
@@ -19,7 +18,7 @@
 // Default setting
 #define MOTOR_LEFT_ID 1
 #define MOTOR_RIGHT_ID 0
-#define BAUDRATE 57600             // Default Baudrate of DYNAMIXEL X series
+#define BAUDRATE 57600                                                                                // Default Baudrate of DYNAMIXEL X series
 #define DEVICE_NAME "/dev/serial/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4:1.0-port0" // [Linux]: "/dev/ttyUSB*", [Windows]: "COM*"
 
 using namespace dynamixel;
@@ -68,7 +67,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
 
             RCLCPP_INFO(
                 this->get_logger(),
-                "left_vel: %d right_vel: %d" , velocity_left, velocity_right);
+                "left_vel: %d right_vel: %d", velocity_left, velocity_right);
         });
 }
 
@@ -78,35 +77,39 @@ VelocityCmdNode::~VelocityCmdNode()
 
 void setupDynamixel(uint8_t dxl_id1, uint8_t dxl_id2)
 {
-  // Use Velocity Control Mode
-  dxl_comm_result = packetHandler->write1ByteTxRx(
-    portHandler,
-    dxl_id1,
-    ADDR_OPERATING_MODE,
-    1,
-    &dxl_error
-  );
+    // Use Velocity Control Mode
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        dxl_id1,
+        ADDR_OPERATING_MODE,
+        1,
+        &dxl_error);
 
-  if (dxl_comm_result != COMM_SUCCESS) {
-    RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode.");
-  } else {
-    RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
-  }
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode.");
+    }
+    else
+    {
+        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
+    }
 
-  // Use Velocity Control Mode
-  dxl_comm_result = packetHandler->write1ByteTxRx(
-    portHandler,
-    dxl_id2,
-    ADDR_OPERATING_MODE,
-    1,
-    &dxl_error
-  );
+    // Use Velocity Control Mode
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        dxl_id2,
+        ADDR_OPERATING_MODE,
+        1,
+        &dxl_error);
 
-  if (dxl_comm_result != COMM_SUCCESS) {
-    RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode.");
-  } else {
-    RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
-  }
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode.");
+    }
+    else
+    {
+        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
+    }
 }
 
 int main(int argc, char *argv[])
@@ -138,7 +141,39 @@ int main(int argc, char *argv[])
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set the baudrate.");
     }
 
-    setupDynamixel(MOTOR_LEFT_ID, MOTOR_RIGHT_ID);
+    // Use Velocity Control Mode
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        MOTOR_LEFT_ID,
+        ADDR_OPERATING_MODE,
+        1,
+        &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode.");
+    }
+    else
+    {
+        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
+    }
+
+    // Use Velocity Control Mode
+    dxl_comm_result = packetHandler->write1ByteTxRx(
+        portHandler,
+        MOTOR_RIGHT_ID,
+        ADDR_OPERATING_MODE,
+        1,
+        &dxl_error);
+
+    if (dxl_comm_result != COMM_SUCCESS)
+    {
+        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode.");
+    }
+    else
+    {
+        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
+    }
 
     rclcpp::init(argc, argv);
 
