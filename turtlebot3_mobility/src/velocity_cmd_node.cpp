@@ -76,67 +76,6 @@ VelocityCmdNode::~VelocityCmdNode()
 {
 }
 
-void setupMotors(uint8_t dxl_id_1, uint8_t dxl_id_2)
-{
-    // Enable Torque of Dynamixels
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
-        dxl_id_1,
-        ADDR_TORQUE_ENABLE,
-        1,
-        &dxl_error);
-
-    if (dxl_comm_result != COMM_SUCCESS)
-    {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in left motor. CORREGIR");
-    }
-    else
-    {
-        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to enable torque.");
-    }
-
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
-        dxl_id_2,
-        ADDR_TORQUE_ENABLE,
-        1,
-        &dxl_error);
-
-    if (dxl_comm_result != COMM_SUCCESS)
-    {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to enable torque in right motor. CORREGIR");
-    }
-    else
-    {
-        RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to enable torque.");
-    }
-    
-    // Change to Velocity Control in the motors
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
-        dxl_id_1,
-        ADDR_OPERATING_MODE,
-        1,
-        &dxl_error);
-
-    if (dxl_comm_result != COMM_SUCCESS)
-    {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in left motor. CORREGIR");
-    }
-
-    dxl_comm_result = packetHandler->write1ByteTxRx(
-        portHandler,
-        dxl_id_2,
-        ADDR_OPERATING_MODE,
-        1,
-        &dxl_error);
-
-    if (dxl_comm_result != COMM_SUCCESS)
-    {
-        RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode in right motor. CORREGIR");
-    }
-}
-
 int main(int argc, char *argv[])
 {
     portHandler = PortHandler::getPortHandler(DEVICE_NAME);
@@ -165,8 +104,6 @@ int main(int argc, char *argv[])
     {
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set the baudrate.");
     }
-
-    setupMotors(MOTOR_LEFT_ID, MOTOR_RIGHT_ID);
 
     rclcpp::init(argc, argv);
 
