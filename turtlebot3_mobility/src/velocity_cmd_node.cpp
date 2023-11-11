@@ -76,12 +76,27 @@ VelocityCmdNode::~VelocityCmdNode()
 {
 }
 
-void setupDynamixel(uint8_t dxl_id)
+void setupDynamixel(uint8_t dxl_id1, uint8_t dxl_id2)
 {
-  // Use Position Control Mode
+  // Use Velocity Control Mode
   dxl_comm_result = packetHandler->write1ByteTxRx(
     portHandler,
-    dxl_id,
+    dxl_id1,
+    ADDR_OPERATING_MODE,
+    1,
+    &dxl_error
+  );
+
+  if (dxl_comm_result != COMM_SUCCESS) {
+    RCLCPP_ERROR(rclcpp::get_logger("velocity_cmd_node"), "Failed to set Velocity Control Mode.");
+  } else {
+    RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
+  }
+
+  // Use Velocity Control Mode
+  dxl_comm_result = packetHandler->write1ByteTxRx(
+    portHandler,
+    dxl_id2,
     ADDR_OPERATING_MODE,
     1,
     &dxl_error
@@ -123,7 +138,7 @@ int main(int argc, char *argv[])
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set the baudrate.");
     }
 
-    setupDynamixel(BROADCAST_ID);
+    setupDynamixel(MOTOR_LEFT_ID, MOTOR_RIGHT_ID);
 
     rclcpp::init(argc, argv);
 
