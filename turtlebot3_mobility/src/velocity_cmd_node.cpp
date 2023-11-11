@@ -140,6 +140,20 @@ int main(int argc, char *argv[])
     {
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set the baudrate.");
     }
+    // Disable Torque of DYNAMIXEL
+    packetHandler->write1ByteTxRx(
+        portHandler,
+        MOTOR_LEFT_ID,
+        ADDR_TORQUE_ENABLE,
+        1,
+        &dxl_error);
+
+    packetHandler->write1ByteTxRx(
+        portHandler,
+        MOTOR_RIGHT_ID,
+        ADDR_TORQUE_ENABLE,
+        1,
+        &dxl_error);
 
     // Use Velocity Control Mode
     dxl_comm_result = packetHandler->write1ByteTxRx(
