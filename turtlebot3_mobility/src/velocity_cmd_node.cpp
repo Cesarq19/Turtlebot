@@ -43,7 +43,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
         {
             uint8_t dxl_error = 0;
 
-            linear_velocity_ = static_cast<int32_t>(msg->linear.x * 200);
+            linear_velocity_ = static_cast<int32_t>(msg->linear.x * 100);
             angular_velocity_ = static_cast<int32_t>(msg->angular.z * 100);
 
             int32_t velocity_left = linear_velocity_ - angular_velocity_;
@@ -104,6 +104,21 @@ int main(int argc, char *argv[])
     {
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set the baudrate.");
     }
+
+    // Disable Torque of DYNAMIXEL
+    packetHandler->write1ByteTxRx(
+        portHandler,
+        MOTOR_LEFT_ID,
+        ADDR_TORQUE_ENABLE,
+        1,
+        &dxl_error);
+
+    packetHandler->write1ByteTxRx(
+        portHandler,
+        MOTOR_RIGHT_ID,
+        ADDR_TORQUE_ENABLE,
+        1,
+        &dxl_error);
 
     rclcpp::init(argc, argv);
 
