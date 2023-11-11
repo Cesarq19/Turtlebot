@@ -76,6 +76,24 @@ VelocityCmdNode::~VelocityCmdNode()
 {
 }
 
+void setupDynamixel(uint8_t dxl_id)
+{
+  // Use Position Control Mode
+  dxl_comm_result = packetHandler->write1ByteTxRx(
+    portHandler,
+    dxl_id,
+    ADDR_OPERATING_MODE,
+    1,
+    &dxl_error
+  );
+
+  if (dxl_comm_result != COMM_SUCCESS) {
+    RCLCPP_ERROR(rclcpp::get_logger("read_write_node"), "Failed to set Velocity Control Mode.");
+  } else {
+    RCLCPP_INFO(rclcpp::get_logger("read_write_node"), "Succeeded to set Velocity Control Mode.");
+  }
+}
+
 int main(int argc, char *argv[])
 {
     portHandler = PortHandler::getPortHandler(DEVICE_NAME);
@@ -105,20 +123,7 @@ int main(int argc, char *argv[])
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set the baudrate.");
     }
 
-    // Disable Torque of DYNAMIXEL
-    packetHandler->write1ByteTxRx(
-        portHandler,
-        MOTOR_LEFT_ID,
-        ADDR_TORQUE_ENABLE,
-        1,
-        &dxl_error);
-
-    packetHandler->write1ByteTxRx(
-        portHandler,
-        MOTOR_RIGHT_ID,
-        ADDR_TORQUE_ENABLE,
-        1,
-        &dxl_error);
+    setupDynamixel(BROADCAST_ID);
 
     rclcpp::init(argc, argv);
 
