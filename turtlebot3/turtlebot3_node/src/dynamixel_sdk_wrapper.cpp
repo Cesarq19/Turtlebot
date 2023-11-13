@@ -141,6 +141,38 @@ bool DynamixelSDKWrapper::init_dynamixel_sdk_handlers()
     return false;
   }
 
+  int32_t dxl_comm_result = COMM_RX_FAIL;
+  uint8_t dxl_error = 0;
+
+  dxl_comm_result = packetHandler_->write1ByteTxRx(
+      portHandler_,
+      0,
+      64,
+      1,
+      &dxl_error);
+
+  dxl_comm_result = packetHandler_->write1ByteTxRx(
+      portHandler_,
+      1,
+      64,
+      1,
+      &dxl_error);
+
+  dxl_comm_result = packetHandler_->write1ByteTxRx(
+      portHandler_,
+      0,
+      11,
+      1,
+      &dxl_error);
+
+  dxl_comm_result = packetHandler_->write1ByteTxRx(
+      portHandler_,
+      0,
+      11,
+      1,
+      &dxl_error);
+
+
   return true;
 }
 
