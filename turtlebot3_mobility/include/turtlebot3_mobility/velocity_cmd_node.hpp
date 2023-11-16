@@ -13,6 +13,8 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include "rclcpp/rclcpp.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
+#include <nav_msgs/msg/odometry.hpp>
+#include "turtlebot3_node/odometry.hpp"
 
 class VelocityCmdNode : public rclcpp::Node
 {
@@ -21,6 +23,7 @@ class VelocityCmdNode : public rclcpp::Node
         virtual ~VelocityCmdNode();
 
     private:
+        std::unique_ptr<Odometry> odom_;
         void setupMotors(uint32_t dxl_id_1, uint8_t dxl_id_2);
         void cmd_vel_callback();
         int32_t linear_velocity_;
