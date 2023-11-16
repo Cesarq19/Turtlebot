@@ -14,7 +14,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include <nav_msgs/msg/odometry.hpp>
-#include "turtlebot3_node/odometry.hpp"
+#include "turtlebot3_mobility/odometry.hpp"
 
 class VelocityCmdNode : public rclcpp::Node
 {

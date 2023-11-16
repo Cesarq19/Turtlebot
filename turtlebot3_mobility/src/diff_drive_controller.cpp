@@ -14,7 +14,7 @@
 //
 // Author: Darby Lim
 
-#include "turtlebot3_node/diff_drive_controller.hpp"
+#include "turtlebot3_mobility/diff_drive_controller.hpp"
 
 #include <memory>
 
