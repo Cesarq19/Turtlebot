@@ -54,7 +54,7 @@ set(DEPENDENCIES
 set(EXEC_NAME "turtlebot3_mobility")
 
 add_executable(${EXEC_NAME} src/velocity_cmd_node.cpp)
-target_link_libraries(${EXECUTABLE_NAME} ${PROJECT_NAME}_lib)
+# target_link_libraries(${EXECUTABLE_NAME} ${PROJECT_NAME}_lib)
 ament_target_dependencies(${EXEC_NAME} ${DEPENDENCIES})
 
 ################################################################################
