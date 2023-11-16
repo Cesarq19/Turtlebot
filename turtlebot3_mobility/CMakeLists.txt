@@ -19,6 +19,7 @@ find_package(ament_cmake REQUIRED)
 find_package(dynamixel_sdk REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(message_filters REQUIRED)
+find_package(nav_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -42,6 +43,7 @@ add_library(${PROJECT_NAME}_lib
 set(DEPENDENCIES
   "dynamixel_sdk"
   "geometry_msgs"
+  "nav_msgs"
   "message_filters"
   "rclcpp"
   "sensor_msgs"
