@@ -16,6 +16,10 @@
 #include <nav_msgs/msg/odometry.hpp>
 #include "turtlebot3_mobility/odometry.hpp"
 
+namespace robotis
+{
+namespace turtlebot3
+{
 class VelocityCmdNode : public rclcpp::Node
 {
     public:
@@ -30,4 +34,6 @@ class VelocityCmdNode : public rclcpp::Node
         int32_t angular_velocity_;
         rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;
 };
+}
+}
 #endif // TURTLEBOT3_MOBILITY__VELOCITY_CMD_NODE_HPP_
