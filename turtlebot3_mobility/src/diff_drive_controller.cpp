@@ -18,7 +18,7 @@
 
 #include <memory>
 
-using robotis::turtlebot3::DiffDriveController;
+using ramel::tb3Custom::DiffDriveController;
 
 DiffDriveController::DiffDriveController(const float wheel_seperation, const float wheel_radius)
 : Node("diff_drive_controller", rclcpp::NodeOptions().use_intra_process_comms(true))

@@ -21,6 +21,7 @@
 #define BAUDRATE 57600                                                                                // Default Baudrate of DYNAMIXEL X series
 #define DEVICE_NAME "/dev/serial/by-path/platform-fd500000.pcie-pci-0000:01:00.0-usb-0:1.4:1.0-port0" // [Linux]: "/dev/ttyUSB*", [Windows]: "COM*"
 
+using ramel::tb3Custom::VelocityCmdNode;
 using namespace dynamixel;
 
 PortHandler *portHandler;

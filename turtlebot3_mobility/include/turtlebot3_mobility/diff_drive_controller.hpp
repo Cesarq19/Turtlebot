@@ -23,20 +23,20 @@
 
 #include "turtlebot3_mobility/odometry.hpp"
 
-namespace robotis
+namespace ramel
 {
-namespace turtlebot3
-{
-class DiffDriveController : public rclcpp::Node
-{
-public:
-  explicit DiffDriveController(const float wheel_seperation, const float wheel_radius);
-  virtual ~DiffDriveController() {}
+  namespace tb3Custom
+  {
+    class DiffDriveController : public rclcpp::Node
+    {
+      public:
+        explicit DiffDriveController(const float wheel_seperation, const float wheel_radius);
+        virtual ~DiffDriveController() {}
 
-private:
-  std::shared_ptr<rclcpp::Node> nh_;
-  std::unique_ptr<Odometry> odometry_;
-};
-}  // namespace turtlebot3
+      private:
+        std::shared_ptr<rclcpp::Node> nh_;
+        std::unique_ptr<Odometry> odometry_;
+    };
+  }  // namespace turtlebot3
 }  // namespace robotis
 #endif  // TURTLEBOT3_NODE__DIFF_DRIVE_CONTROLLER_HPP_

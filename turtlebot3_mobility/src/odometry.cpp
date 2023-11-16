@@ -20,7 +20,7 @@
 #include <string>
 #include <utility>
 
-using robotis::turtlebot3::Odometry;
+using ramel::tb3Custom::Odometry;
 using namespace std::chrono_literals;
 
 Odometry::Odometry(
