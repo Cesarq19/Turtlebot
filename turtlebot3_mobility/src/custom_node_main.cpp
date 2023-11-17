@@ -53,11 +53,11 @@ int main(int argc, char * argv[])
 
   rclcpp::executors::SingleThreadedExecutor executor;
 
-  auto velocityCmdNode = std::make_shared<ramel::tb3Custom::VelocityCmdNode>(usb_port);
+  auto velocityCmdNode = std::make_shared<ramel::tb3Custom::VelocityCmdNode>();
   auto diff_drive_controller =
     std::make_shared<ramel::tb3Custom::DiffDriveController>(
-    turtlebot3->get_wheels()->separation,
-    turtlebot3->get_wheels()->radius);
+    0.160,
+    0.033); // velocityCmdNode->get_wheels()->separation, velocityCmdNode->get_wheels()->radius
 
   executor.add_node(velocityCmdNode);
   executor.add_node(diff_drive_controller);
