@@ -38,6 +38,7 @@ add_library(${PROJECT_NAME}_lib
   "src/diff_drive_controller.cpp"
   "src/odometry.cpp"
   "src/velocity_cmd_node.cpp"
+  "src/custom_node_main.cpp"  
 )
 
 set(DEPENDENCIES
@@ -56,9 +57,9 @@ set(DEPENDENCIES
 target_link_libraries(${PROJECT_NAME}_lib)
 ament_target_dependencies(${PROJECT_NAME}_lib ${DEPENDENCIES})
 
-set(EXEC_NAME "turtlebot3_mobility")
+set(EXEC_NAME "turtlebot3_node_custom")
 
-add_executable(${EXEC_NAME} src/velocity_cmd_node.cpp)
+add_executable(${EXEC_NAME} src/custom_node_main.cpp)
 target_link_libraries(${EXEC_NAME} ${PROJECT_NAME}_lib)
 ament_target_dependencies(${EXEC_NAME} ${DEPENDENCIES})
 
