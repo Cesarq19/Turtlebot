@@ -15,6 +15,7 @@
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include <nav_msgs/msg/odometry.hpp>
 #include "turtlebot3_mobility/odometry.hpp"
+#include "turtlebot3_mobility/diff_drive_controller.hpp"
 
 namespace ramel
 {

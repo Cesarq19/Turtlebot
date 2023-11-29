@@ -3,6 +3,7 @@
 #include <string>
 
 #include "turtlebot3_mobility/velocity_cmd_node.hpp"
+#include "turtlebot3_mobility/diff_drive_controller.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 #include "rclcpp/rclcpp.hpp"
 
@@ -192,8 +193,19 @@ int main(int argc, char *argv[])
 
     rclcpp::init(argc, argv);
 
-    auto velocitycmd = std::make_shared<VelocityCmdNode>();
-    rclcpp::spin(velocitycmd);
+    rclcpp::executors::SingleThreadedExecutor executor;
+
+    auto velocitycmd = std::make_shared<ramel::tb3Custom::VelocityCmdNode>();
+
+    auto diff_drive_controller = std::make_shared<ramel::tb3Custom::DiffDriveController>(
+        0.160,
+        0.033);
+
+    executor.add_node(velocitycmd);
+    executor.add_node(diff_drive_controller);
+    
+    //rclcpp::spin(velocitycmd);
+    executor.spin();
     rclcpp::shutdown();
 
     // Disable Torque of DYNAMIXEL
