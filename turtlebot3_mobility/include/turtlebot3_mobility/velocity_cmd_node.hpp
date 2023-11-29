@@ -17,6 +17,12 @@
 #include "turtlebot3_mobility/odometry.hpp"
 #include "turtlebot3_mobility/diff_drive_controller.hpp"
 
+#include "turtlebot3_node/sensors/battery_state.hpp"
+#include "turtlebot3_node/sensors/imu.hpp"
+#include "turtlebot3_node/sensors/joint_state.hpp"
+#include "turtlebot3_node/sensors/sensor_state.hpp"
+#include "turtlebot3_node/sensors/sensors.hpp"
+
 namespace ramel
 {
     namespace tb3Custom
@@ -31,6 +37,7 @@ namespace ramel
                 std::unique_ptr<Odometry> odom_;
                 void setupMotors(uint32_t dxl_id_1, uint8_t dxl_id_2);
                 void cmd_vel_callback();
+                void add_sensors();
                 int32_t linear_velocity_;
                 int32_t angular_velocity_;
                 rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;

@@ -36,6 +36,8 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
 {
     RCLCPP_INFO(this->get_logger(), "Run mobility node");
 
+    add_sensors();
+    
     auto qos = rclcpp::QoS(rclcpp::KeepLast(10));
     cmd_vel_sub_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel",
@@ -75,6 +77,68 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
 
 VelocityCmdNode::~VelocityCmdNode()
 {
+}
+
+void VelocityCmdNode::add_sensors()
+{
+  RCLCPP_INFO(this->get_logger(), "Add Sensors");
+
+  uint8_t is_connected_bumper_1 = 0;
+  uint8_t is_connected_bumper_2 = 0;
+  uint8_t is_connected_illumination = 0;
+  uint8_t is_connected_ir = 0;
+  uint8_t is_connected_sonar = 0;
+
+  this->declare_parameter<uint8_t>("sensors.bumper_1");
+  this->declare_parameter<uint8_t>("sensors.bumper_2");
+  this->declare_parameter<uint8_t>("sensors.illumination");
+  this->declare_parameter<uint8_t>("sensors.ir");
+  this->declare_parameter<uint8_t>("sensors.sonar");
+
+  this->get_parameter_or<uint8_t>(
+    "sensors.bumper_1",
+    is_connected_bumper_1,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.bumper_2",
+    is_connected_bumper_2,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.illumination",
+    is_connected_illumination,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.ir",
+    is_connected_ir,
+    0);
+  this->get_parameter_or<uint8_t>(
+    "sensors.sonar",
+    is_connected_sonar,
+    0);
+
+  sensors_.push_back(
+    new sensors::BatteryState(
+      node_handle_,
+      "battery_state"));
+
+  sensors_.push_back(
+    new sensors::Imu(
+      node_handle_,
+      "imu",
+      "magnetic_field",
+      "imu_link"));
+
+  sensors_.push_back(
+    new sensors::SensorState(
+      node_handle_,
+      "sensor_state",
+      is_connected_bumper_1,
+      is_connected_bumper_2,
+      is_connected_illumination,
+      is_connected_ir,
+      is_connected_sonar));
+
+  sensors_.push_back(new sensors::JointState(node_handle_, "joint_states", "base_link"));
 }
 
 void setupDynamixel(uint8_t dxl_id1, uint8_t dxl_id2)
