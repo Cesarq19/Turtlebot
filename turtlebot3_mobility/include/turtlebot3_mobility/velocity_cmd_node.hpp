@@ -30,7 +30,6 @@ namespace ramel
                 std::unique_ptr<Odometry> odom_;
                 void setupMotors(uint32_t dxl_id_1, uint8_t dxl_id_2);
                 void cmd_vel_callback();
-                int init_system();
                 int32_t linear_velocity_;
                 int32_t angular_velocity_;
                 rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_sub_;

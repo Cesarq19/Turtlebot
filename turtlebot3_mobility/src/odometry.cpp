@@ -34,9 +34,7 @@ Odometry::Odometry(
   publish_tf_(false),
   imu_angle_(0.0f)
 {
-  RCLCPP_INFO(nh_->get_logger(), "-------------");
   RCLCPP_INFO(nh_->get_logger(), "Init Odometry");
-  RCLCPP_INFO(nh_->get_logger(), "-------------");
 
   nh_->declare_parameter<std::string>("odometry.frame_id");
   nh_->declare_parameter<std::string>("odometry.child_frame_id");
