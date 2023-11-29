@@ -4,7 +4,7 @@
 
 #include "turtlebot3_mobility/velocity_cmd_node.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
-#include "rclcpp/rclcpp.hpp"
+//#include "rclcpp/rclcpp.hpp"
 
 // Control table address
 #define ADDR_OPERATING_MODE 11
@@ -37,7 +37,7 @@ VelocityCmdNode::VelocityCmdNode() : Node("velocity_cmd_node")
     RCLCPP_INFO(this->get_logger(), "Run mobility node");
     RCLCPP_INFO(this->get_logger(), "-----------------");
     init_system();
-    cmd_vel_callback()
+    cmd_vel_callback();
 }
 
 VelocityCmdNode::~VelocityCmdNode()
@@ -119,7 +119,7 @@ void VelocityCmdNode::cmd_vel_callback(){
         });
 }
 
-int VelocityCmdNode::init_system(int argc, char *argv[]){
+int VelocityCmdNode::init_system(){
     portHandler = PortHandler::getPortHandler(DEVICE_NAME);
     packetHandler = PacketHandler::getPacketHandler(PROTOCOL_VERSION);
 
@@ -195,11 +195,11 @@ int VelocityCmdNode::init_system(int argc, char *argv[]){
         RCLCPP_INFO(rclcpp::get_logger("velocity_cmd_node"), "Succeeded to set Velocity Control Mode.");
     }
 
-    rclcpp::init(argc, argv);
+    //rclcpp::init(argc, argv);
 
-    auto velocitycmd = std::make_shared<VelocityCmdNode>();
-    rclcpp::spin(velocitycmd);
-    rclcpp::shutdown();
+    //auto velocitycmd = std::make_shared<VelocityCmdNode>();
+    //rclcpp::spin(velocitycmd);
+    //rclcpp::shutdown();
 
     // Disable Torque of DYNAMIXEL
     packetHandler->write1ByteTxRx(
