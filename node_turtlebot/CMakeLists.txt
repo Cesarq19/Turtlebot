@@ -23,13 +23,17 @@ find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs)
 find_package(dynamixel_sdk REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 include_directories(include)
 
 add_library(${PROJECT_NAME}_lib
   "src/main.cpp"
   "src/motores.cpp" 
+  "src/odometry.cpp"
   "src/sensores.cpp"
+  
+  "src/sensors/joint_state.cpp"
 )
 
 set(DEPENDENCIES
@@ -39,6 +43,7 @@ set(DEPENDENCIES
   "std_msgs"
   "nav_msgs"
   "dynamixel_sdk"
+  "tf2_ros"
 )
 
 target_link_libraries(${PROJECT_NAME}_lib)
@@ -65,6 +70,7 @@ ament_export_dependencies(rclcpp)
 ament_export_dependencies(std_msgs)
 ament_export_dependencies(sensor_msgs)
 ament_export_dependencies(nav_msgs)
+ament_export_dependencies(tf2_ros)
 ament_package()
 
 # add_executable(motores src/motores.cpp)

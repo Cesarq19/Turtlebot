@@ -1,6 +1,10 @@
 #include "node_turtlebot/motores.hpp"
 
+#include <memory>
+#include <string>
+
 using namespace dynamixel;
+using namespace std::chrono_literals;
 
 PortHandler *portHandler;
 PacketHandler *packetHandler;
@@ -10,6 +14,7 @@ int dxl_comm_result = COMM_TX_FAIL;
 uint32_t goal_velocity = 0;
 
 MotoresNode::MotoresNode() : Node("motores_node") {
+    RCLCPP_INFO(get_logger(), "Init TurtleBot3 Node Main");
     // Publicadores para los motores izquierdo y derecho (Positions)
     left_motor_publisher_ = this->create_publisher<std_msgs::msg::Int32>("left_motor_pos", 10);
     right_motor_publisher_ = this->create_publisher<std_msgs::msg::Int32>("right_motor_pos", 10);
