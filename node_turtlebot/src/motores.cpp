@@ -1,4 +1,6 @@
-#include "motores.hpp"
+#include "node_turtlebot/motores.hpp"
+
+using namespace dynamixel;
 
 PortHandler *portHandler;
 PacketHandler *packetHandler;
@@ -23,8 +25,6 @@ void MotoresNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
     std_msgs::msg::Int32 left_motor_pos;
     std_msgs::msg::Int32 right_motor_pos;
 
-    int left_present_pos;
-    int right_present_pos;
 
     // Lógica para convertir comandos de velocidad a comandos de motor
     uint8_t dxl_error = 0;
@@ -58,7 +58,7 @@ void MotoresNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
 
     // Read present position left motor
     dxl_comm_result =
-        packetHandler->write4ByteTxRx(
+        packetHandler->read4ByteTxRx(
             portHandler,
             MOTOR_LEFT_ID,
             ADDR_PRESENT_POSITION,
@@ -66,7 +66,7 @@ void MotoresNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
             &dxl_error);
     // Read present position right motor
     dxl_comm_result =
-        packetHandler->write4ByteTxRx(
+        packetHandler->read4ByteTxRx(
             portHandler,
             MOTOR_RIGHT_ID,
             ADDR_PRESENT_POSITION,
@@ -81,7 +81,7 @@ void MotoresNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
     right_motor_publisher_->publish(right_motor_pos);
 }
 
-void setupMotors()
+void MotoresNode::setupMotors()
 {
     // Enable torque left motor
     packetHandler->write1ByteTxRx(
@@ -132,7 +132,7 @@ void setupMotors()
     }
 }
 
-int main(int argc, char** argv) {
+int MotoresNode::run() {
     portHandler = PortHandler::getPortHandler(DEVICE_NAME);
     packetHandler = PacketHandler::getPacketHandler(PROTOCOL_VERSION);
 
@@ -161,9 +161,45 @@ int main(int argc, char** argv) {
     }
 
     setupMotors();
-    rclcpp::init(argc, argv);
-    rclcpp::spin(std::make_shared<MotoresNode>());
-    rclcpp::shutdown();
+    // rclcpp::init(argc, argv);
+    // rclcpp::spin(std::make_shared<MotoresNode>());
+    // rclcpp::shutdown();
 
     return 0;
 }
+
+// int main(int argc, char** argv) {
+//     portHandler = PortHandler::getPortHandler(DEVICE_NAME);
+//     packetHandler = PacketHandler::getPacketHandler(PROTOCOL_VERSION);
+
+//     // Open Serial Port
+//     dxl_comm_result = portHandler->openPort();
+//     if (dxl_comm_result == false)
+//     {
+//         RCLCPP_ERROR(rclcpp::get_logger("motores_node"), "Failed to open the port!");
+//         return -1;
+//     }
+//     else
+//     {
+//         RCLCPP_INFO(rclcpp::get_logger("motores_node"), "Succeeded to open the port.");
+//     }
+
+//     // Set the baudrate of the serial port (use DYNAMIXEL Baudrate)
+//     dxl_comm_result = portHandler->setBaudRate(BAUDRATE);
+//     if (dxl_comm_result == false)
+//     {
+//         RCLCPP_ERROR(rclcpp::get_logger("motores_node"), "Failed to set the baudrate!");
+//         return -1;
+//     }
+//     else
+//     {
+//         RCLCPP_INFO(rclcpp::get_logger("motores_node"), "Succeeded to set the baudrate.");
+//     }
+
+//     setupMotors();
+//     rclcpp::init(argc, argv);
+//     rclcpp::spin(std::make_shared<MotoresNode>());
+//     rclcpp::shutdown();
+
+//     return 0;
+// }

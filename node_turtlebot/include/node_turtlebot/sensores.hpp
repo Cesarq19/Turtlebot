@@ -9,6 +9,8 @@ class SensoresNode : public rclcpp::Node {
 public:
     SensoresNode();
 
+    void run();
+
 private:
     void publishSensorData();
 
