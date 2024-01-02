@@ -32,7 +32,7 @@ add_library(${PROJECT_NAME}_lib
   "src/motores.cpp" 
   "src/odometry.cpp"
   "src/sensores.cpp"
-  
+  "src/diff_drive_controller.cpp"
   "src/sensors/joint_state.cpp"
 )
 

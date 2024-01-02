@@ -24,6 +24,7 @@
 #include <rclcpp/rclcpp.hpp>
 
 // #include "node_turtlebot/dynamixel_sdk_wrapper.hpp"
+#include "node_turtlebot/core_motores.hpp"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 
 using namespace dynamixel;
@@ -39,9 +40,9 @@ public:
   {
   }
 
-  /*virtual void publish(
+  virtual void publish(
     const rclcpp::Time & now,
-    std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) = 0;*/
+    std::shared_ptr<Motores> & dxl_sdk_wrapper) = 0;
 
 protected:
   std::shared_ptr<rclcpp::Node> nh_;

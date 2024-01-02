@@ -28,7 +28,8 @@ class Motores
     public:
         static void initMotors();
         static bool write_velocity(int32_t velocity_left, int32_t velocity_right);
-        static infoMotor read_velocity(uint8_t id);
+        static int32_t read_position(uint8_t id);
+        static int32_t read_velocity(uint8_t id);
     private:
         inline static PortHandler *portHandler;
         inline static PacketHandler *packetHandler;

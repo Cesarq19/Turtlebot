@@ -81,7 +81,21 @@ bool Motores::write_velocity(int32_t velocity_left, int32_t velocity_right)
 
 }
 
-infoMotor Motores::read_velocity(uint8_t id)
+int32_t Motores::read_position(uint8_t id)
+{
+    int dxl_comm_result = COMM_TX_FAIL;
+    int present_position;
+
+    dxl_comm_result =
+        packetHandler->read4ByteTxRx(
+            portHandler,
+            id,
+            ADDR_PRESENT_POSITION,
+            reinterpret_cast<uint32_t *>(&present_position),
+            &dxl_error);
+}
+
+int32_t Motores::read_velocity(uint8_t id)
 {
     int dxl_comm_result = COMM_TX_FAIL;
     int present_position;

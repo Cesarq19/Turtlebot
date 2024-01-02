@@ -2,6 +2,7 @@
 #define TURTLEBOT3_NODE__SENSORS__JOINT_STATE_HPP_
 
 #include <sensor_msgs/msg/joint_state.hpp>
+#include "node_turtlebot/core_motores.hpp"
 
 #include <memory>
 #include <string>
@@ -24,9 +25,9 @@ public:
     const std::string & topic_name = "joint_states",
     const std::string & frame_id = "base_link");
 
-  // void publish(
-  //   const rclcpp::Time & now,
-  //   std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper) override;
+  void publish(
+    const rclcpp::Time & now,
+    std::shared_ptr<Motores> & dxl_sdk_wrapper) override;
 
 private:
   rclcpp::Publisher<sensor_msgs::msg::JointState>::SharedPtr pub_;

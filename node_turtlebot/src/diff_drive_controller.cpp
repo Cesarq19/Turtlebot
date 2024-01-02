@@ -2,8 +2,6 @@
 
 #include <memory>
 
-using robotis::turtlebot3::DiffDriveController;
-
 DiffDriveController::DiffDriveController()
 : Node("diff_drive_controller", rclcpp::NodeOptions().use_intra_process_comms(true))
 {

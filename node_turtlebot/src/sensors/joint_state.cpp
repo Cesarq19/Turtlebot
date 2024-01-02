@@ -19,27 +19,17 @@ JointState::JointState(
 
 void JointState::publish(
   const rclcpp::Time & now,
-  std::shared_ptr<DynamixelSDKWrapper> & dxl_sdk_wrapper)
+  std::shared_ptr<Motores> & dxl_sdk_wrapper)
 {
   auto msg = std::make_unique<sensor_msgs::msg::JointState>();
 
   static std::array<int32_t, JOINT_NUM> last_diff_position, last_position;
 
   std::array<int32_t, JOINT_NUM> position =
-  {dxl_sdk_wrapper->get_data_from_device<int32_t>(
-      extern_control_table.present_position_left.addr,
-      extern_control_table.present_position_left.length),
-    dxl_sdk_wrapper->get_data_from_device<int32_t>(
-      extern_control_table.present_position_right.addr,
-      extern_control_table.present_position_right.length)};
+  {dxl_sdk_wrapper->read_position(0),dxl_sdk_wrapper->read_position(1)};
 
   std::array<int32_t, JOINT_NUM> velocity =
-  {dxl_sdk_wrapper->get_data_from_device<int32_t>(
-      extern_control_table.present_velocity_left.addr,
-      extern_control_table.present_velocity_left.length),
-    dxl_sdk_wrapper->get_data_from_device<int32_t>(
-      extern_control_table.present_velocity_right.addr,
-      extern_control_table.present_velocity_right.length)};
+  {dxl_sdk_wrapper->read_velocity(0),dxl_sdk_wrapper->read_velocity(1)};
 
   // std::array<int32_t, JOINT_NUM> current =
   //   {dxl_sdk_wrapper->get_data_from_device<int32_t>(
