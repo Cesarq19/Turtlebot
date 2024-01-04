@@ -6,7 +6,7 @@
 
 SensoresNode::SensoresNode() : Node("sensores_node") {
     // Publicadores
-    joint_state_publisher_ = this->create_publisher<sensor_msgs::msg::JointState>("/joint_state", 10);
+    joint_state_publisher_ = this->create_publisher<sensor_msgs::msg::JointState>("/joint_states", 10);
     odom_publisher_ = this->create_publisher<nav_msgs::msg::Odometry>("/odom", 10);
 
     // Temporizador para simular la publicación de datos de sensores
