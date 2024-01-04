@@ -34,6 +34,7 @@ add_library(${PROJECT_NAME}_lib
   "src/sensores.cpp"
   "src/diff_drive_controller.cpp"
   "src/sensors/joint_state.cpp"
+  "src/core_motores.cpp"
 )
 
 set(DEPENDENCIES
