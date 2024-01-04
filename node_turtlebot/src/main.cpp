@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
     auto motores_node = std::make_shared<MotoresNode>();
     motores_node->run();
     auto sensores_node = std::make_shared<SensoresNode>();
-    sensores_node->run();
+    //sensores_node->run();
 
     // Crear un conjunto de nodos y ejecutar
     rclcpp::executors::SingleThreadedExecutor executor;
