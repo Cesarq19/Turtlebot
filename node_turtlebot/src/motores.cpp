@@ -14,7 +14,7 @@ uint8_t dxl_error = 0;
 int dxl_comm_result = COMM_TX_FAIL;
 uint32_t goal_velocity = 0;
 
-MotoresNode::MotoresNode() : Node("motores_node") {
+MotoresNode::MotoresNode() : Node("motores_node", rclcpp::NodeOptions().use_intra_process_comms(true)) {
     RCLCPP_INFO(get_logger(), "Init TurtleBot3 Node Main");
     
     Motores::initMotors();
@@ -26,6 +26,22 @@ MotoresNode::MotoresNode() : Node("motores_node") {
     // Suscriptor al tópico cmd_vel para recibir comandos de velocidad
     cmd_vel_subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel", 10, std::bind(&MotoresNode::cmdVelCallback, this, std::placeholders::_1)
+    );
+
+    node_handle_ = std::shared_ptr<::rclcpp::Node>(this, [](::rclcpp::Node *) {});
+
+    sensors_.push_back(new JointState(node_handle_, "joint_states", "base_link"));
+
+    publish_timer_ = this->create_wall_timer(
+        100,
+        [this]() -> void
+        {
+            rclcpp::Time now = this->now();
+
+            for (const auto & sensor : sensors_) {
+                sensor->publish(now);
+            }
+        }
     );
 }
 
