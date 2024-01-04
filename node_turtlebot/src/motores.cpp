@@ -33,7 +33,7 @@ MotoresNode::MotoresNode() : Node("motores_node", rclcpp::NodeOptions().use_intr
     sensors_.push_back(new JointState(node_handle_, "joint_states", "base_link"));
 
     publish_timer_ = this->create_wall_timer(
-        100,
+        std::chrono::milliseconds(100),
         [this]() -> void
         {
             rclcpp::Time now = this->now();
@@ -66,6 +66,6 @@ void MotoresNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
     //right_motor_publisher_->publish(right_motor_pos);
 }
 
-int MotoresNode::run() {
+/*int MotoresNode::run() {
     
-}
+}*/

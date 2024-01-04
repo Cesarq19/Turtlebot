@@ -37,6 +37,7 @@ public:
 private:
     void cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
     
+    rclcpp::TimerBase::SharedPtr publish_timer_;
     rclcpp::Node::SharedPtr node_handle_;
     std::list<Sensors *> sensors_;
 
