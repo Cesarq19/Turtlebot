@@ -53,10 +53,3 @@ void SensoresNode::publishSensorData() {
     // Publicar la odometría
     odom_publisher_->publish(odometry_msg_);
 }
-
-// int main(int argc, char** argv) {
-//     rclcpp::init(argc, argv);
-//     rclcpp::spin(std::make_shared<SensoresNode>());
-//     rclcpp::shutdown();
-//     return 0;
-// }
