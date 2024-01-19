@@ -43,17 +43,17 @@ void SensoresNode::run(){
 
 void SensoresNode::publishSensorData() {
     // Simular datos de sensores y actualizar el estado del joint
-    joint_state_.position[0] += 0.01;  // Izquierda
-    joint_state_.position[1] += 0.02;  // Derecha
+    // joint_state_.position[0] += 0.01;  // Izquierda
+    // joint_state_.position[1] += 0.02;  // Derecha
 
     // Publicar el estado del joint
     joint_state_publisher_->publish(joint_state_);
 
     // Simular datos de odometría y actualizar la posición
     odometry_msg_.header.stamp = this->now();
-    odometry_msg_.pose.pose.position.x += 0.01;
-    odometry_msg_.pose.pose.position.y += 0.02;
-    odometry_msg_.pose.pose.orientation.z += 0.01;
+    // odometry_msg_.pose.pose.position.x += 0.01;
+    // odometry_msg_.pose.pose.position.y += 0.02;
+    // odometry_msg_.pose.pose.orientation.z += 0.01;
 
     // Publicar la odometría
     odom_publisher_->publish(odometry_msg_);
