@@ -125,12 +125,14 @@ int32_t Motores::read_position(uint8_t id)
             ADDR_PRESENT_POSITION,
             reinterpret_cast<uint32_t *>(&present_position),
             &dxl_error);
+
+    return present_position;
 }
 
 int32_t Motores::read_velocity(uint8_t id)
 {
     int dxl_comm_result = COMM_TX_FAIL;
-    int present_position;
+    int present_velocity;
     uint8_t dxl_error = 0;
 
     dxl_comm_result =
@@ -138,7 +140,7 @@ int32_t Motores::read_velocity(uint8_t id)
             portHandler,
             id,
             ADDR_PRESENT_POSITION,
-            reinterpret_cast<uint32_t *>(&present_position),
+            reinterpret_cast<uint32_t *>(&present_velocity),
             &dxl_error);
-
+    return present_velocity;
 }
