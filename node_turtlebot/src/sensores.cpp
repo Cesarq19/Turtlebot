@@ -42,9 +42,6 @@ void SensoresNode::run(){
 }
 
 void SensoresNode::publishSensorData() {
-    // Simular datos de sensores y actualizar el estado del joint
-    joint_state_.position[0] += 0.01;  // Izquierda
-    joint_state_.position[1] += 0.02;  // Derecha
 
     // Publicar el estado del joint
     joint_state_publisher_->publish(joint_state_);
