@@ -19,7 +19,7 @@ void Motores::initMotors()
     if (dxl_comm_result == false)
     {
         RCLCPP_ERROR(rclcpp::get_logger("motores_node"), "Failed to open the port!");
-        //return -1;
+        // return -1;
     }
     else
     {
@@ -32,7 +32,7 @@ void Motores::initMotors()
     if (dxl_comm_result == false)
     {
         RCLCPP_ERROR(rclcpp::get_logger("motores_node"), "Failed to set the baudrate!");
-        //return -1;
+        // return -1;
     }
     else
     {
@@ -46,6 +46,7 @@ void Motores::initMotors()
         ADDR_TORQUE_ENABLE,
         1,
         &dxl_error);
+
     // Enable torque right motor
     packetHandler->write1ByteTxRx(
         portHandler,
@@ -53,6 +54,7 @@ void Motores::initMotors()
         ADDR_TORQUE_ENABLE,
         1,
         &dxl_error);
+
     // Use Velocity Control Mode
     dxl_comm_result = packetHandler->write1ByteTxRx(
         portHandler,
@@ -109,21 +111,20 @@ bool Motores::write_velocity(int32_t velocity_left, int32_t velocity_right)
             ADDR_GOAL_VELOCITY,
             -velocity_right,
             &dxl_error);
-
 }
 
 int32_t Motores::read_position(uint8_t id)
 {
     int dxl_comm_result = COMM_TX_FAIL;
     uint8_t dxl_error = 0;
-    int present_position;
+    int32_t present_position = 0;
 
     dxl_comm_result =
         packetHandler->read4ByteTxRx(
             portHandler,
             id,
             ADDR_PRESENT_POSITION,
-            reinterpret_cast<uint32_t *>(&present_position),
+            (uint32_t *)&present_position,
             &dxl_error);
 
     return present_position;
@@ -132,7 +133,7 @@ int32_t Motores::read_position(uint8_t id)
 int32_t Motores::read_velocity(uint8_t id)
 {
     int dxl_comm_result = COMM_TX_FAIL;
-    int present_velocity;
+    int32_t present_velocity = 0;
     uint8_t dxl_error = 0;
 
     dxl_comm_result =
@@ -140,7 +141,7 @@ int32_t Motores::read_velocity(uint8_t id)
             portHandler,
             id,
             ADDR_PRESENT_POSITION,
-            reinterpret_cast<uint32_t *>(&present_velocity),
+            (uint32_t *)&present_velocity,
             &dxl_error);
     return present_velocity;
 }

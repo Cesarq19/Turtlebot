@@ -19,10 +19,6 @@ MotoresNode::MotoresNode() : Node("motores_node", rclcpp::NodeOptions().use_intr
     
     Motores::initMotors();
 
-    // Publicadores para los motores izquierdo y derecho (Positions)
-    //left_motor_publisher_ = this->create_publisher<std_msgs::msg::Int32>("left_motor_pos", 10);
-    //right_motor_publisher_ = this->create_publisher<std_msgs::msg::Int32>("right_motor_pos", 10);
-
     // Suscriptor al tópico cmd_vel para recibir comandos de velocidad
     cmd_vel_subscription_ = this->create_subscription<geometry_msgs::msg::Twist>(
         "cmd_vel", 10, std::bind(&MotoresNode::cmdVelCallback, this, std::placeholders::_1)
@@ -46,10 +42,6 @@ MotoresNode::MotoresNode() : Node("motores_node", rclcpp::NodeOptions().use_intr
 }
 
 void MotoresNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg) {
-    // Convertir comandos de velocidad a velocidades de motor y publicar
-    //std_msgs::msg::Int32 left_motor_pos;
-    //std_msgs::msg::Int32 right_motor_pos;
-
     int32_t linear_velocity_ = static_cast<int32_t>(msg->linear.x * 100);
     int32_t angular_velocity_ = static_cast<int32_t>(msg->angular.z * 100);
 
@@ -57,15 +49,5 @@ void MotoresNode::cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg)
     int32_t velocity_right = linear_velocity_ + angular_velocity_;
 
     Motores::write_velocity(velocity_left, velocity_right);
-
-    //left_motor_pos.data = left_present_pos;
-    //right_motor_pos.data = right_present_pos;
-
-    // Publicar comandos de motor
-    //left_motor_publisher_->publish(left_motor_pos);
-    //right_motor_publisher_->publish(right_motor_pos);
 }
 
-/*int MotoresNode::run() {
-    
-}*/

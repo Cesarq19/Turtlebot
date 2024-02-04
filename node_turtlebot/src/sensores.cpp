@@ -32,9 +32,7 @@ SensoresNode::SensoresNode() : Node("sensores_node") {
     odometry_msg_.twist.twist.angular.z = 0.0;
 
     joint_state_publisher_->publish(joint_state_);
-
     odom_publisher_->publish(odometry_msg_);
-
 }
 
 void SensoresNode::run(){
