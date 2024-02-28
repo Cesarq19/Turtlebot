@@ -13,13 +13,13 @@ SensoresNode::SensoresNode() : Node("sensores_node") {
     timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&SensoresNode::publishSensorData, this));
 
     // Inicializar el estado del joint
-    joint_state_.name = {"left_wheel_joint", "right_wheel_joint"};
+    joint_state_.name = {"wheel_left_joint", "wheel_right_joint"};
     joint_state_.position.resize(2, 0.0);
     joint_state_.velocity.resize(2, 0.0);
 
     // Inicializar la odometría
     odometry_msg_.header.frame_id = "odom";
-    odometry_msg_.child_frame_id = "base_link";
+    odometry_msg_.child_frame_id = "base_footprint";
     odometry_msg_.pose.pose.position.x = 0.0;
     odometry_msg_.pose.pose.position.y = 0.0;
     odometry_msg_.pose.pose.position.z = 0.0;
@@ -46,10 +46,7 @@ void SensoresNode::publishSensorData() {
 
     // Simular datos de odometría y actualizar la posición
     odometry_msg_.header.stamp = this->now();
-    odometry_msg_.pose.pose.position.x += 0.01;
-    odometry_msg_.pose.pose.position.y += 0.02;
-    odometry_msg_.pose.pose.orientation.z += 0.01;
-
+    
     // Publicar la odometría
     odom_publisher_->publish(odometry_msg_);
 }
