@@ -37,12 +37,12 @@ public:
 private:
     void cmdVelCallback(const geometry_msgs::msg::Twist::SharedPtr msg);
     
-    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr left_motor_publisher_;
-    rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr right_motor_publisher_;
+    rclcpp::TimerBase::SharedPtr publish_timer_;
+    rclcpp::Node::SharedPtr node_handle_;
+    std::list<Sensors *> sensors_;
+
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_subscription_;
 
-    int left_present_pos;
-    int right_present_pos;
 };
 
 #endif  // MOTORES_HPP

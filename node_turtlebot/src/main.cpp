@@ -7,14 +7,14 @@ int main(int argc, char** argv) {
 
     // Crear instancias de los nodos
     auto motores_node = std::make_shared<MotoresNode>();
-    motores_node->run();
-    auto sensores_node = std::make_shared<SensoresNode>();
-    sensores_node->run();
+    //motores_node->run();
+    auto diff_drive_controller = std::make_shared<DiffDriveController>();
+    //diff_drive_controller->run();
 
     // Crear un conjunto de nodos y ejecutar
     rclcpp::executors::SingleThreadedExecutor executor;
     executor.add_node(motores_node);
-    executor.add_node(sensores_node);
+    executor.add_node(diff_drive_controller);
 
     // Esperar a que se cierre el nodo principal
     executor.spin();

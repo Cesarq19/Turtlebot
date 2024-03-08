@@ -28,12 +28,12 @@ Odometry::Odometry(
   nh_->get_parameter_or<bool>(
     "odometry.use_imu",
     use_imu_,
-    false);
+    true);
 
   nh_->get_parameter_or<bool>(
     "odometry.publish_tf",
     publish_tf_,
-    false);
+    true);
 
   nh_->get_parameter_or<std::string>(
     "odometry.frame_id",
@@ -49,9 +49,8 @@ Odometry::Odometry(
   odom_pub_ = nh_->create_publisher<nav_msgs::msg::Odometry>("odom", qos);
 
   tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(nh_);
-
-  if (use_imu_) {
-    uint32_t queue_size = 10;
+  
+  uint32_t queue_size = 10;
     joint_state_imu_sync_ = std::make_shared<SynchronizerJointStateImu>(queue_size);
 
     msg_ftr_joint_state_sub_ =
@@ -81,12 +80,7 @@ Odometry::Odometry(
         this,
         std::placeholders::_1,
         std::placeholders::_2));
-  } else {
-    joint_state_sub_ = nh_->create_subscription<sensor_msgs::msg::JointState>(
-      "joint_states",
-      qos,
-      std::bind(&Odometry::joint_state_callback, this, std::placeholders::_1));
-  }
+
 }
 
 void Odometry::joint_state_callback(const sensor_msgs::msg::JointState::SharedPtr joint_state_msg)

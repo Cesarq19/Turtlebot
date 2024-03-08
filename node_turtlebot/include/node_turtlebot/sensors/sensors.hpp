@@ -41,8 +41,7 @@ public:
   }
 
   virtual void publish(
-    const rclcpp::Time & now,
-    std::shared_ptr<Motores> & dxl_sdk_wrapper) = 0;
+    const rclcpp::Time & now) = 0;
 
 protected:
   std::shared_ptr<rclcpp::Node> nh_;
